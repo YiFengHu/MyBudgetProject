@@ -22,11 +22,18 @@ public class DetailDBHandler {
     }
 
     public long insertDetail(Detail detail){
-        return detailDao.insert(detail);
+        if(detail!=null) {
+            return detailDao.insert(detail);
+        }
+        return -1;
     }
 
     public List<Detail> getAllDetail(){
         List<Detail> allDetails = detailDao.loadAll();
         return (allDetails==null? new ArrayList<Detail>() : allDetails);
+    }
+
+    public void deleteAll(){
+        detailDao.deleteAll();
     }
 }

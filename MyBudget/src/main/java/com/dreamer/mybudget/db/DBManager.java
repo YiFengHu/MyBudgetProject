@@ -24,8 +24,6 @@ public class DBManager {
     private DaoSession daoSession = null;
     private SQLiteDatabase db = null;
 
-    private DetailDao detailDao = null;
-
     private DetailDBHandler detailDBHandler = null;
 
     private DBManager(){

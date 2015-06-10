@@ -6,7 +6,7 @@ package com.dreamer.mybudget;
  */
 public class Detail {
 
-    private long did;
+    private Long did;
     /** Not-null value. */
     private String io;
     private long time;
@@ -18,11 +18,11 @@ public class Detail {
     public Detail() {
     }
 
-    public Detail(long did) {
+    public Detail(Long did) {
         this.did = did;
     }
 
-    public Detail(long did, String io, long time, int price, String type, String mark) {
+    public Detail(Long did, String io, long time, int price, String type, String mark) {
         this.did = did;
         this.io = io;
         this.time = time;
@@ -31,11 +31,11 @@ public class Detail {
         this.mark = mark;
     }
 
-    public long getDid() {
+    public Long getDid() {
         return did;
     }
 
-    public void setDid(long did) {
+    public void setDid(Long did) {
         this.did = did;
     }
 

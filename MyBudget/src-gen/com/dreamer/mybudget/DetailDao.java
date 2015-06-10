@@ -23,7 +23,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Did = new Property(0, long.class, "did", true, "DID");
+        public final static Property Did = new Property(0, Long.class, "did", true, "DID");
         public final static Property Io = new Property(1, String.class, "io", false, "IO");
         public final static Property Time = new Property(2, long.class, "time", false, "TIME");
         public final static Property Price = new Property(3, int.class, "price", false, "PRICE");
@@ -44,7 +44,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'DETAIL' (" + //
-                "'DID' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: did
+                "'DID' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: did
                 "'IO' TEXT NOT NULL ," + // 1: io
                 "'TIME' INTEGER NOT NULL ," + // 2: time
                 "'PRICE' INTEGER NOT NULL ," + // 3: price
@@ -62,7 +62,11 @@ public class DetailDao extends AbstractDao<Detail, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, Detail entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getDid());
+ 
+        Long did = entity.getDid();
+        if (did != null) {
+            stmt.bindLong(1, did);
+        }
         stmt.bindString(2, entity.getIo());
         stmt.bindLong(3, entity.getTime());
         stmt.bindLong(4, entity.getPrice());
@@ -77,14 +81,14 @@ public class DetailDao extends AbstractDao<Detail, Long> {
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public Detail readEntity(Cursor cursor, int offset) {
         Detail entity = new Detail( //
-            cursor.getLong(offset + 0), // did
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // did
             cursor.getString(offset + 1), // io
             cursor.getLong(offset + 2), // time
             cursor.getInt(offset + 3), // price
@@ -97,7 +101,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Detail entity, int offset) {
-        entity.setDid(cursor.getLong(offset + 0));
+        entity.setDid(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setIo(cursor.getString(offset + 1));
         entity.setTime(cursor.getLong(offset + 2));
         entity.setPrice(cursor.getInt(offset + 3));

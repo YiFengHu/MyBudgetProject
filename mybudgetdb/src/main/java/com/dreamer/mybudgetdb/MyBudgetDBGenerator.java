@@ -19,7 +19,7 @@ public class MyBudgetDBGenerator {
 
         private static Entity addDetailTable(Schema schema) {
             Entity detailEntity = schema.addEntity(DetailTable.TableName);
-            detailEntity.addLongProperty(DetailTable.Did).primaryKey().autoincrement().notNull();
+            detailEntity.addLongProperty(DetailTable.Did).primaryKey().autoincrement();
             detailEntity.addStringProperty(DetailTable.Io).notNull();
             detailEntity.addLongProperty(DetailTable.Time).notNull();
             detailEntity.addIntProperty(DetailTable.Price).notNull();

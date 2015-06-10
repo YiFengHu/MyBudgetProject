@@ -32,6 +32,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void insertDetail() {
+        DBManager.getInstance().getDetailDBHandler().deleteAll();
         for(int i=0; i<20;i++) {
             Detail detail = new Detail();
             detail.setIo("out");
