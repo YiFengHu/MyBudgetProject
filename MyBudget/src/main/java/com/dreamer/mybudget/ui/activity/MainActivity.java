@@ -1,11 +1,14 @@
 package com.dreamer.mybudget.ui.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -20,16 +23,19 @@ import com.dreamer.mybudget.core.db.data.DefaultCategory;
 import java.util.List;
 
 
-public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener{
+public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener{
 
     private static String TAG = MainActivity.class.getSimpleName();
     private Toolbar toolbar = null;
+    private FloatingActionButton addButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initActionBar();
+        addButton = (FloatingActionButton)findViewById(R.id.main_addButton);
+        addButton.setOnClickListener(this);
 
         insertDetail();
         queryAllDetail();
@@ -90,5 +96,15 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.main_addButton:
+
+                startActivity(new Intent(this, AddDetailActivity.class));
+                break;
+        }
     }
 }

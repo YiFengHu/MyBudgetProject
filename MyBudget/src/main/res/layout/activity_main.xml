@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,12 +8,28 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:layout_alignParentTop="true"
         app:theme="@style/ActionBarThemeOverlay"
-        app:popupTheme="@style/ActionBarPopupThemeOverlay"/>
+        app:popupTheme="@style/ActionBarPopupThemeOverlay"
+        android:elevation="@dimen/elevation"/>
 
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="hi"/>
+        android:layout_below="@+id/main_toolbar"
+        android:layout_marginTop="20dp"
+        android:layout_centerInParent="true"
+        android:text="Main"
+        android:textSize="@dimen/default_text_size"/>
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_48dp"
+        android:elevation="@dimen/elevation"/>
+
+</RelativeLayout>
