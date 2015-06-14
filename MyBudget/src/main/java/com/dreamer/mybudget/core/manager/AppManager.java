@@ -1,4 +1,4 @@
-package com.dreamer.mybudget.manager;
+package com.dreamer.mybudget.core.manager;
 
 import android.content.Context;
 

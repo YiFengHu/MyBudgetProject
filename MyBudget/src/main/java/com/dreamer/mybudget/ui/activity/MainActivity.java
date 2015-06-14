@@ -1,4 +1,4 @@
-package com.dreamer.mybudget;
+package com.dreamer.mybudget.ui.activity;
 
 
 import android.os.Bundle;
@@ -9,10 +9,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
+import com.dreamer.mybudget.Category;
+import com.dreamer.mybudget.Detail;
+import com.dreamer.mybudget.R;
 import com.dreamer.mybudget.base.BaseActivity;
-import com.dreamer.mybudget.db.DBManager;
-import com.dreamer.mybudget.db.data.CategoryType;
-import com.dreamer.mybudget.db.data.DefaultCategory;
+import com.dreamer.mybudget.core.db.DBManager;
+import com.dreamer.mybudget.core.db.data.CategoryType;
+import com.dreamer.mybudget.core.db.data.DefaultCategory;
 
 import java.util.List;
 

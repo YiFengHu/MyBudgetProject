@@ -1,4 +1,4 @@
-package com.dreamer.mybudget.db;
+package com.dreamer.mybudget.core.db;
 
 
 import com.dreamer.mybudget.DaoSession;

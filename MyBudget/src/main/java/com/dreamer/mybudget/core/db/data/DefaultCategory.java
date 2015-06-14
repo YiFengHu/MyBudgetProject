@@ -1,4 +1,4 @@
-package com.dreamer.mybudget.db.data;
+package com.dreamer.mybudget.core.db.data;
 
 import android.content.Context;
 

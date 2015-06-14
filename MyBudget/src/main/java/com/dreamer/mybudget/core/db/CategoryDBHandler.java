@@ -1,13 +1,12 @@
-package com.dreamer.mybudget.db;
+package com.dreamer.mybudget.core.db;
 
 import android.content.Context;
 
 import com.dreamer.mybudget.Category;
 import com.dreamer.mybudget.CategoryDao;
 import com.dreamer.mybudget.DaoSession;
-import com.dreamer.mybudget.R;
-import com.dreamer.mybudget.db.data.CategoryType;
-import com.dreamer.mybudget.db.data.DefaultCategory;
+import com.dreamer.mybudget.core.db.data.CategoryType;
+import com.dreamer.mybudget.core.db.data.DefaultCategory;
 
 import java.util.ArrayList;
 import java.util.List;

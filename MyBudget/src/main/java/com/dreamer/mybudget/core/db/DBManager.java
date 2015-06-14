@@ -1,12 +1,11 @@
-package com.dreamer.mybudget.db;
+package com.dreamer.mybudget.core.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.dreamer.mybudget.DaoMaster;
 import com.dreamer.mybudget.DaoSession;
-import com.dreamer.mybudget.DetailDao;
-import com.dreamer.mybudget.manager.AppManager;
+import com.dreamer.mybudget.core.manager.AppManager;
 
 /**
  * Created by Roder Hu on 15/6/6.

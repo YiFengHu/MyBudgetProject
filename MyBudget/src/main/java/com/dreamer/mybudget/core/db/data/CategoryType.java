@@ -1,4 +1,4 @@
-package com.dreamer.mybudget.db.data;
+package com.dreamer.mybudget.core.db.data;
 
 /**
  * Created by Roder Hu on 15/6/11.

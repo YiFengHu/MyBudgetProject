@@ -2,8 +2,8 @@ package com.dreamer.mybudget.base;
 
 import android.app.Application;
 
-import com.dreamer.mybudget.db.DBManager;
-import com.dreamer.mybudget.manager.AppManager;
+import com.dreamer.mybudget.core.db.DBManager;
+import com.dreamer.mybudget.core.manager.AppManager;
 
 /**
  * Created by Roder Hu on 15/6/6.
