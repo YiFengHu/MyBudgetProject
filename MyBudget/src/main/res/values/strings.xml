@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">MyBudget</string>
 
+    <!-- Expense Category -->
+    <string name="category_expense_food">Food</string>
+    <string name="category_expense_clothing">Clothing</string>
+    <string name="category_expense_household">Household</string>
+    <string name="category_expense_transportation">Transportation</string>
+    <string name="category_expense_leisure">Leisure</string>
+    <string name="category_expense_rent">Rent</string>
+    <string name="category_expense_self_development">Self-Development</string>
+    <string name="category_expense_other">Other</string>
+
+    <!-- Income Category -->
+    <string name="category_income_salary">Salary</string>
+    <string name="category_income_pocket_money">Pocket money</string>
+    <string name="category_income_bonus">Bonus</string>
+    <string name="category_income_other">Other</string>
+
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>

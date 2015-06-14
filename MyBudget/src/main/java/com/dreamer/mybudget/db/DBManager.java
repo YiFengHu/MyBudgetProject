@@ -25,6 +25,7 @@ public class DBManager {
     private SQLiteDatabase db = null;
 
     private DetailDBHandler detailDBHandler = null;
+    private CategoryDBHandler categoryDBHandler = null;
 
     private DBManager(){
         context = AppManager.getInstance().getContext();
@@ -46,5 +47,12 @@ public class DBManager {
             detailDBHandler = new DetailDBHandler(daoSession);
         }
         return detailDBHandler;
+    }
+
+    public CategoryDBHandler getCategoryDBHandler(){
+        if(categoryDBHandler == null){
+            categoryDBHandler = new CategoryDBHandler(context, daoSession);
+        }
+        return categoryDBHandler;
     }
 }

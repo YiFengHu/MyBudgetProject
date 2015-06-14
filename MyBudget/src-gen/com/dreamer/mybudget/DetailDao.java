@@ -1,11 +1,14 @@
 package com.dreamer.mybudget;
 
+import java.util.List;
+import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
+import de.greenrobot.dao.internal.SqlUtils;
 import de.greenrobot.dao.internal.DaoConfig;
 
 import com.dreamer.mybudget.Detail;
@@ -27,9 +30,11 @@ public class DetailDao extends AbstractDao<Detail, Long> {
         public final static Property Io = new Property(1, String.class, "io", false, "IO");
         public final static Property Time = new Property(2, long.class, "time", false, "TIME");
         public final static Property Price = new Property(3, int.class, "price", false, "PRICE");
-        public final static Property Type = new Property(4, String.class, "type", false, "TYPE");
+        public final static Property Category_cid = new Property(4, long.class, "category_cid", false, "CATEGORY_CID");
         public final static Property Mark = new Property(5, String.class, "mark", false, "MARK");
     };
+
+    private DaoSession daoSession;
 
 
     public DetailDao(DaoConfig config) {
@@ -38,6 +43,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
     
     public DetailDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -48,7 +54,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
                 "'IO' TEXT NOT NULL ," + // 1: io
                 "'TIME' INTEGER NOT NULL ," + // 2: time
                 "'PRICE' INTEGER NOT NULL ," + // 3: price
-                "'TYPE' TEXT NOT NULL ," + // 4: type
+                "'CATEGORY_CID' INTEGER NOT NULL ," + // 4: category_cid
                 "'MARK' TEXT);"); // 5: mark
     }
 
@@ -70,12 +76,18 @@ public class DetailDao extends AbstractDao<Detail, Long> {
         stmt.bindString(2, entity.getIo());
         stmt.bindLong(3, entity.getTime());
         stmt.bindLong(4, entity.getPrice());
-        stmt.bindString(5, entity.getType());
+        stmt.bindLong(5, entity.getCategory_cid());
  
         String mark = entity.getMark();
         if (mark != null) {
             stmt.bindString(6, mark);
         }
+    }
+
+    @Override
+    protected void attachEntity(Detail entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */
@@ -92,7 +104,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
             cursor.getString(offset + 1), // io
             cursor.getLong(offset + 2), // time
             cursor.getInt(offset + 3), // price
-            cursor.getString(offset + 4), // type
+            cursor.getLong(offset + 4), // category_cid
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // mark
         );
         return entity;
@@ -105,7 +117,7 @@ public class DetailDao extends AbstractDao<Detail, Long> {
         entity.setIo(cursor.getString(offset + 1));
         entity.setTime(cursor.getLong(offset + 2));
         entity.setPrice(cursor.getInt(offset + 3));
-        entity.setType(cursor.getString(offset + 4));
+        entity.setCategory_cid(cursor.getLong(offset + 4));
         entity.setMark(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
@@ -132,4 +144,97 @@ public class DetailDao extends AbstractDao<Detail, Long> {
         return true;
     }
     
+    private String selectDeep;
+
+    protected String getSelectDeep() {
+        if (selectDeep == null) {
+            StringBuilder builder = new StringBuilder("SELECT ");
+            SqlUtils.appendColumns(builder, "T", getAllColumns());
+            builder.append(',');
+            SqlUtils.appendColumns(builder, "T0", daoSession.getCategoryDao().getAllColumns());
+            builder.append(" FROM DETAIL T");
+            builder.append(" LEFT JOIN CATEGORY T0 ON T.'CATEGORY_CID'=T0.'CID'");
+            builder.append(' ');
+            selectDeep = builder.toString();
+        }
+        return selectDeep;
+    }
+    
+    protected Detail loadCurrentDeep(Cursor cursor, boolean lock) {
+        Detail entity = loadCurrent(cursor, 0, lock);
+        int offset = getAllColumns().length;
+
+        Category categoryName = loadCurrentOther(daoSession.getCategoryDao(), cursor, offset);
+         if(categoryName != null) {
+            entity.setCategoryName(categoryName);
+        }
+
+        return entity;    
+    }
+
+    public Detail loadDeep(Long key) {
+        assertSinglePk();
+        if (key == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder(getSelectDeep());
+        builder.append("WHERE ");
+        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
+        String sql = builder.toString();
+        
+        String[] keyArray = new String[] { key.toString() };
+        Cursor cursor = db.rawQuery(sql, keyArray);
+        
+        try {
+            boolean available = cursor.moveToFirst();
+            if (!available) {
+                return null;
+            } else if (!cursor.isLast()) {
+                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
+            }
+            return loadCurrentDeep(cursor, true);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
+    public List<Detail> loadAllDeepFromCursor(Cursor cursor) {
+        int count = cursor.getCount();
+        List<Detail> list = new ArrayList<Detail>(count);
+        
+        if (cursor.moveToFirst()) {
+            if (identityScope != null) {
+                identityScope.lock();
+                identityScope.reserveRoom(count);
+            }
+            try {
+                do {
+                    list.add(loadCurrentDeep(cursor, false));
+                } while (cursor.moveToNext());
+            } finally {
+                if (identityScope != null) {
+                    identityScope.unlock();
+                }
+            }
+        }
+        return list;
+    }
+    
+    protected List<Detail> loadDeepAllAndCloseCursor(Cursor cursor) {
+        try {
+            return loadAllDeepFromCursor(cursor);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
+    public List<Detail> queryDeep(String where, String... selectionArg) {
+        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
+        return loadDeepAllAndCloseCursor(cursor);
+    }
+ 
 }

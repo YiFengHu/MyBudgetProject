@@ -16,6 +16,7 @@ public class MyBudgetApp extends Application {
 
         AppManager.getInstance().init(this);
 
+        //Init DBManager
         DBManager.getInstance();
     }
 }

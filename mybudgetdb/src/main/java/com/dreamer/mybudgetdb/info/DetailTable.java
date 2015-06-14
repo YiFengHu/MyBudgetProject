@@ -8,6 +8,6 @@ public class DetailTable {
 	public static final String Io = "io";
 	public static final String Time = "time";
 	public static final String Price = "price";
-	public static final String Type = "type";
+	public static final String Category_cid = "category_cid";
 	public static final String Mark = "mark";
 }

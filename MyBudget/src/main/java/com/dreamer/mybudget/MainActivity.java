@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.db.DBManager;
+import com.dreamer.mybudget.db.data.CategoryType;
+import com.dreamer.mybudget.db.data.DefaultCategory;
 
 import java.util.List;
 
@@ -33,11 +35,15 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private void insertDetail() {
         DBManager.getInstance().getDetailDBHandler().deleteAll();
+
+        Category category = DBManager.getInstance()
+                .getCategoryDBHandler().queryCategory(DefaultCategory.EXPENSE_FOOD);
+
         for(int i=0; i<20;i++) {
             Detail detail = new Detail();
-            detail.setIo("out");
+            detail.setIo(CategoryType.Expense.name());
             detail.setTime(System.currentTimeMillis());
-            detail.setType("food");
+            detail.setCategory_cid(category.getCid());
             detail.setPrice(i * 100);
             detail.setMark("mark number " + i);
             DBManager.getInstance().getDetailDBHandler().insertDetail(detail);
