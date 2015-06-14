@@ -2,6 +2,7 @@ package com.dreamer.mybudget.ui.activity;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
@@ -70,6 +71,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private void initActionBar() {
         toolbar = (Toolbar)findViewById(R.id.main_toolbar);
         toolbar.setTitle(getString(R.string.app_name));
+        if(Build.VERSION.SDK_INT>=21) {
+            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
+        }
 
         setSupportActionBar(toolbar);
 

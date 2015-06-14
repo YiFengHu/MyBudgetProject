@@ -14,12 +14,18 @@ import com.dreamer.mybudget.base.BaseActivity;
 public class AddDetailActivity extends BaseActivity{
 
     private static final String TAG = AddDetailActivity.class.getSimpleName();
+    public static final String DETAIL_TYPE_KEY = "DETAIL_TYPE_KEY";
+    private String detailType = "";
     private Toolbar toolbar = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle!=null) {
+            detailType = bundle.getString(DETAIL_TYPE_KEY);
+        }
+
         setContentView(R.layout.activity_add_detail);
         initActionBar();
     }
