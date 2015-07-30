@@ -38,8 +38,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         addButton = (FloatingActionButton)findViewById(R.id.main_addButton);
         addButton.setOnClickListener(this);
 
-        insertDetail();
-        queryAllDetail();
+//        insertDetail();
+//        queryAllDetail();
 
     }
 
@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         DBManager.getInstance().getDetailDBHandler().deleteAll();
 
         Category category = DBManager.getInstance()
-                .getCategoryDBHandler().queryCategory(DefaultCategory.EXPENSE_FOOD);
+                .getCategoryDBHandler().queryCategory(CategoryType.Expense, DefaultCategory.EXPENSE_FOOD);
 
         for(int i=0; i<20;i++) {
             Detail detail = new Detail();
