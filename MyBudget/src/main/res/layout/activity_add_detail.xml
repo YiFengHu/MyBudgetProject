@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -11,13 +12,30 @@
         app:theme="@style/ActionBarThemeOverlay"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"/>
 
-    <TextView
+    <com.dreamer.mybudget.ui.activity.custom.DetailLayout
+        android:id="@+id/addDetail_detailLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/main_toolbar"
-        android:layout_marginTop="20dp"
-        android:layout_centerInParent="true"
-        android:text="Add Detail"
-        android:textSize="@dimen/default_text_size"/>
+        android:layout_marginLeft="@dimen/activity_padding_5dp"
+        android:layout_marginRight="@dimen/activity_padding_5dp"/>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_margin_20dp"
+        android:background="?attr/colorPrimary">
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/addDetail_recyclerView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
+        <GridView
+            android:id="@+id/addDetail_optionGridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            android:gravity="center"
+            android:padding="10dp"/>
+
+        </RelativeLayout>
 </LinearLayout>

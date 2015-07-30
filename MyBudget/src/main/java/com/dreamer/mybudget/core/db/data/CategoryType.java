@@ -5,4 +5,14 @@ package com.dreamer.mybudget.core.db.data;
  */
 public enum CategoryType {
     Income, Expense;
+
+    public static CategoryType getCategoryType(String categoryTypeString){
+        if(Income.name().equals(categoryTypeString)){
+            return Income;
+        }else if(Expense.name().equals(categoryTypeString)){
+            return Expense;
+        }
+
+        return null;
+    }
 }

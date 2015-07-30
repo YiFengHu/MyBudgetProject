@@ -11,4 +11,19 @@
 
     <!-- Material Attribute -->
     <dimen name="elevation">4dp</dimen>
+
+    <!-- Detail View -->
+    <dimen name="detail_view_title_padding">5dp</dimen>
+    <dimen name="detail_view_cardview_radius">10dp</dimen>
+
+    <!-- padding -->
+    <dimen name="activity_padding_5dp">5dp</dimen>
+    <dimen name="activity_padding_10dp">10dp</dimen>
+
+    <!-- margin -->
+    <dimen name="activity_margin_20dp">20dp</dimen>
+
+    <dimen name="carddemo_extras_gplay_grid_columnwidth">140dp</dimen>
+    <dimen name="carddemo_extras_gplay_grid_columnwidth_card">125dp</dimen>
+
 </resources>

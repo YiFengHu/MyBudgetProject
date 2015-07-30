@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">MyBudget</string>
 
+    <!-- Detail Data Title -->
+    <string name="detail_view_type_title">Type:</string>
+    <string name="detail_view_date">Date:</string>
+    <string name="detail_view_price">Price:</string>
+    <string name="detail_view_category">Category:</string>
+    <string name="detail_view_note">Note:</string>
+
+    <!-- Detail Type Category-->
+    <string name="detail_type_category_income">Income</string>
+    <string name="detail_type_category_expense">Expense</string>
+
     <!-- Expense Category -->
     <string name="category_expense_food">Food</string>
     <string name="category_expense_clothing">Clothing</string>

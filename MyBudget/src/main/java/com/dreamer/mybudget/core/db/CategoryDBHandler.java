@@ -49,16 +49,16 @@ public class CategoryDBHandler {
             defaultIncomeCategories =
                     new String[]{DefaultCategory.INCOME_SALARY, DefaultCategory.INCOME_BONUS,
                             DefaultCategory.INCOME_POCKET_MONEY, DefaultCategory.INCOME_OTHER};
-
+            Category category;
             for (int i = 0; i < defaultExpenseCategories.length; i++) {
-                Category category = new Category();
+                category = new Category();
                 category.setCategory_name(defaultExpenseCategories[i]);
                 category.setCategory_type(CategoryType.Expense.name());
                 insertCategory(category);
             }
 
             for (int i = 0; i < defaultIncomeCategories.length; i++) {
-                Category category = new Category();
+                category = new Category();
                 category.setCategory_name(defaultIncomeCategories[i]);
                 category.setCategory_type(CategoryType.Income.name());
                 insertCategory(category);
@@ -74,15 +74,17 @@ public class CategoryDBHandler {
         return -1;
     }
 
-    public Category queryCategory(String categoryName){
+    public Category queryCategory(CategoryType categoryType, String categoryName){
         QueryBuilder<Category> queryBuilder = categoryDao.queryBuilder();
         queryBuilder.where(CategoryDao.Properties.Category_name.eq(categoryName));
+        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType.name()));
+
         return queryBuilder.unique();
     }
 
-    public List<Category> queryCategories(String categoryType){
+    public List<Category> queryCategories(CategoryType categoryType){
         QueryBuilder<Category> queryBuilder = categoryDao.queryBuilder();
-        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType));
+        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType.name()));
         List<Category> result = queryBuilder.list();
         return result == null? new ArrayList<Category>(): result;
     }

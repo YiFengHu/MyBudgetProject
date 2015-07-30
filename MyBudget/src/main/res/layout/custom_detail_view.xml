@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detailView_cardView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_padding_10dp"
+    android:paddingRight="@dimen/activity_padding_5dp"
+    android:paddingTop="@dimen/activity_padding_5dp"
+    android:paddingBottom="@dimen/activity_padding_5dp"
+    card_view:cardCornerRadius="@dimen/detail_view_cardview_radius">
+<GridLayout
+    android:id="@+id/detailView_gridLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2">
+
+    <TextView
+        android:id="@+id/detailView_typeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_view_title_padding"
+        android:text="@string/detail_view_type_title"/>
+
+    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        android:id="@+id/detailView_typeContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_view_title_padding"
+        android:background="@null"
+        android:textCursorDrawable="@null"/>
+
+    <TextView
+        android:id="@+id/detailView_dateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_view_date"
+        android:padding="@dimen/detail_view_title_padding"/>
+
+    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        android:id="@+id/detailView_dateContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_view_title_padding"
+        android:background="@null"
+        android:textCursorDrawable="@null"
+        android:maxEms="10"/>
+
+    <TextView
+        android:id="@+id/detailView_priceTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_view_price"
+        android:padding="@dimen/detail_view_title_padding"
+        android:maxEms="10"/>
+
+    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        android:id="@+id/detailView_priceContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_view_title_padding"
+        android:background="@null"
+        android:textCursorDrawable="@null"/>
+
+    <TextView
+        android:id="@+id/detailView_categoryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_view_category"
+        android:padding="@dimen/detail_view_title_padding"/>
+
+    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        android:id="@+id/detailView_categoryContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_view_title_padding"
+        android:background="@null"
+        android:textCursorDrawable="@null"/>
+
+    <TextView
+        android:id="@+id/detailView_noteTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_view_note"
+        android:padding="@dimen/detail_view_title_padding"/>
+
+    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        android:id="@+id/detailView_noteContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/detail_view_title_padding"
+        android:background="@null"
+        android:textCursorDrawable="@null"
+        android:inputType="textMultiLine" />
+</GridLayout>
+</android.support.v7.widget.CardView>
