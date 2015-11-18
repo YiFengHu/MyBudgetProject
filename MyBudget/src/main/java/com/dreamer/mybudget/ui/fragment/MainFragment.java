@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dreamer.mybudget.R;
-import com.dreamer.mybudget.ui.activity.AddDetailActivity;
+import com.dreamer.mybudget.ui.fragment.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
 
 /**
@@ -51,7 +51,9 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.mainFragment_addButton:
 
-                ((MainActivity)getActivity()).transactionAddDetailFragment(null);
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), AddDetailActivity.class);
+                startActivity(intent);
                 break;
         }
     }

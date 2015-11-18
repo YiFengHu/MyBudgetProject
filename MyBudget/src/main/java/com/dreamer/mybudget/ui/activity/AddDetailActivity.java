@@ -31,6 +31,7 @@ import java.util.Map;
 
 
 /**
+ * @deprecated
  * Created by Roder Hu on 15/6/14.
  */
 public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{

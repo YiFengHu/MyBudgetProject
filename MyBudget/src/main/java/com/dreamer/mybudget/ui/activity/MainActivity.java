@@ -1,10 +1,8 @@
 package com.dreamer.mybudget.ui.activity;
 
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,7 +19,6 @@ import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DefaultCategory;
-import com.dreamer.mybudget.ui.fragment.AddDetailFragment;
 import com.dreamer.mybudget.ui.fragment.MainFragment;
 import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 
@@ -139,31 +136,5 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //                startActivity(new Intent(this, AddDetailActivity.class));
 //                break;
 //        }
-    }
-
-    public void transactionAddDetailFragment(String detailType){
-        Bundle bundle = new Bundle();
-        if(detailType!=null) {
-            bundle.putString(AddDetailFragment.DETAIL_TYPE_KEY, detailType);
-        }
-
-        AddDetailFragment addDetailFragment = new AddDetailFragment();
-        addDetailFragment.setArguments(bundle);
-
-        getSupportFragmentManager().popBackStack();
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_container, addDetailFragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-
-    }
-
-    public void transactionDateRangePickerFragment(DateRangePickerFragment.OnDateRangeSelectedListener callback){
-
-        DateRangePickerFragment dateRangePickerFragment = DateRangePickerFragment.newInstance(callback, false);
-        dateRangePickerFragment.show(getSupportFragmentManager(), null);
     }
 }

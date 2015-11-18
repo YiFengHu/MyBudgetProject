@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -10,8 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:layout_alignParentTop="true"
         app:theme="@style/ActionBarThemeOverlay"
-        app:popupTheme="@style/ActionBarPopupThemeOverlay"/>
+        app:popupTheme="@style/ActionBarPopupThemeOverlay"
+        android:elevation="@dimen/elevation"/>
 
     <com.dreamer.mybudget.ui.activity.custom.DetailLayout
         android:id="@+id/addDetail_detailLayout"
@@ -38,6 +39,15 @@
             android:gravity="center"
             android:layout_margin="@dimen/activity_margin_20dp"
             android:background="@drawable/background_add_detail_option_grid"/>
+
+        <Button
+            android:id="@+id/addDetail_submitButton"
+            android:layout_width="@dimen/btn_250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_detail_submit"
+            android:layout_centerInParent="true"
+            android:background="@drawable/selector_white_button"
+            />
 
         </RelativeLayout>
 </LinearLayout>

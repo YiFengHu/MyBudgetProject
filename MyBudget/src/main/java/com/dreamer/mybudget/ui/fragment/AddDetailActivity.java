@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import com.dreamer.mybudget.Category;
 import com.dreamer.mybudget.Detail;
 import com.dreamer.mybudget.R;
+import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DetailContent;
@@ -34,9 +36,9 @@ import java.util.Map;
 /**
  * Created by Roder Hu on 15/8/26.
  */
-public class AddDetailFragment extends Fragment implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
+public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
 
-    private static final String TAG = AddDetailFragment.class.getSimpleName();
+    private static final String TAG = AddDetailActivity.class.getSimpleName();
     public static final String DETAIL_TYPE_KEY = "DETAIL_TYPE_KEY";
     public static final String DETAIL_OPTION_NEXT_TAG = "Next";
     public static final String DETAIL_OPTION_BACK_SPACE_TAG = "Back";
@@ -55,40 +57,32 @@ public class AddDetailFragment extends Fragment implements DetailLayout.OnDetail
     private String detailType = "";
 
 
-    private View mRootView = null;
     private Toolbar toolbar = null;
     private DetailLayout detailLayout = null;
 
     private GridView gridView = null;
+    private Button submitButton = null;
     private AddDetailOptionAdapter optionAdapter = null;
     private CategoryType currentCategoryType = CategoryType.Expense;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_detail);
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        mRootView = inflater.inflate(R.layout.activity_add_detail, container, false);
+        initLayout();
+        initToolBar();
 
         initOptionDatas();
 
-        initLayout();
 
-        Bundle bundle = getArguments();
+        Bundle bundle = getIntent().getExtras();
         if(bundle!=null) {
             detailType = bundle.getString(DETAIL_TYPE_KEY);
         }
 
-        ((MainActivity)getActivity()).setToolBarWithTitle(getString(R.string.add_detail_title));
-
         detailLayout.setOnDetailItemClick(this);
         nextOption(true);
-
-        return mRootView;
     }
 
     private void initOptionDatas() {
@@ -117,9 +111,34 @@ public class AddDetailFragment extends Fragment implements DetailLayout.OnDetail
     private void initLayout(){
         Log.d(TAG, "initLayout");
 
-        detailLayout = (DetailLayout)mRootView.findViewById(R.id.addDetail_detailLayout);
-        gridView = (GridView) mRootView.findViewById(R.id.addDetail_optionGridView);
+        detailLayout = (DetailLayout)findViewById(R.id.addDetail_detailLayout);
+        gridView = (GridView)findViewById(R.id.addDetail_optionGridView);
+        submitButton =  (Button) findViewById(R.id.addDetail_submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionFinish();
+            }
+        });
+    }
 
+    private void initToolBar() {
+        toolbar = (Toolbar)findViewById(R.id.addDetail_toolbar);
+        if(Build.VERSION.SDK_INT>=21) {
+            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
+        }
+
+        toolbar.setTitle(getString(R.string.add_detail_title));
+        setSupportActionBar(toolbar);
+
+        //must place after setSupportActionBar(toolbar) method. - Roder
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void resetOption(DetailContent content){
@@ -146,13 +165,14 @@ public class AddDetailFragment extends Fragment implements DetailLayout.OnDetail
     }
 
     private void prepareOptions(DetailContent detailContent){
-        setGridViewAdapter(detailContent);
+        prepareView(detailContent);
+
         if(DetailContent.Note.equals(detailContent)){
             detailLayout.readyInputKeyboardOnNote();
 
         }else if(DetailContent.Date.equals(detailContent)){
 
-            ((MainActivity)getActivity()).transactionDateRangePickerFragment(new DateRangePickerFragment.OnDateRangeSelectedListener() {
+            transactionDateRangePickerFragment(new DateRangePickerFragment.OnDateRangeSelectedListener() {
                 @Override
                 public void onDateRangeSelected(int day, int month, int year) {
                     StringBuilder date = new StringBuilder();
@@ -166,10 +186,22 @@ public class AddDetailFragment extends Fragment implements DetailLayout.OnDetail
         }
     }
 
+    private void prepareView(DetailContent detailContent) {
+        if(DetailContent.Note.equals(detailContent)){
+            gridView.setVisibility(View.GONE);
+            submitButton.setVisibility(View.VISIBLE);
+
+        }else{
+            submitButton.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
+            setGridViewAdapter(detailContent);
+        }
+    }
+
 
     private void setGridViewAdapter(DetailContent detailContent){
         List<DetailOptionItem> optionList = optionsMap.get(detailContent);
-        optionAdapter = new AddDetailOptionAdapter(getActivity(), optionList);
+        optionAdapter = new AddDetailOptionAdapter(this, optionList);
         AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(
                 optionAdapter);
 
@@ -185,13 +217,15 @@ public class AddDetailFragment extends Fragment implements DetailLayout.OnDetail
     private void onOptionFinish() {
         Detail detail = detailLayout.convertToDetail();
         DBManager.getInstance().getDetailDBHandler().insertDetail(detail);
-        Toast.makeText(getActivity(), "Detail: " + detail.getIo()
+        Toast.makeText(this, "Detail: " + detail.getIo()
                 + ", " + detail.getCategoryName().getCategory_name()
                 + ", " + detail.getTime()
                 + ", " + detail.getPrice()
                 + ", " + detail.getMark(), Toast.LENGTH_LONG).show();
 
         clearDetailLayoutValues();
+
+        finish();
     }
 
     private void clearDetailLayoutValues(){
