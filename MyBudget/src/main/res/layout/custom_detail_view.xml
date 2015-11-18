@@ -1,104 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_padding_5dp">
+    android:layout_margin="@dimen/activity_padding_5dp"
+    android:orientation="vertical">
 
-<android.support.v7.widget.CardView
-    android:id="@+id/detailView_cardView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    card_view:cardCornerRadius="@dimen/detail_view_cardview_radius"
-    android:paddingLeft="@dimen/activity_padding_10dp"
-    android:paddingRight="@dimen/activity_padding_5dp"
-    android:paddingTop="@dimen/activity_padding_5dp"
-    android:paddingBottom="@dimen/activity_padding_5dp">
-
-<GridLayout
-    android:id="@+id/detailView_gridLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:columnCount="2">
-
-    <TextView
-        android:id="@+id/detailView_typeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/detail_view_title_padding"
-        android:text="@string/detail_view_type_title"/>
-
-    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
-        android:id="@+id/detailView_typeContent"
+    <LinearLayout
+        android:id="@+id/detailView_detailTypeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/detail_view_title_padding"
-        android:background="@null"
-        android:textCursorDrawable="@null"/>
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/detailView_dateTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/detail_view_date"
-        android:padding="@dimen/detail_view_title_padding"/>
+        <TextView
+            android:id="@+id/detailView_typeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/detail_view_title_padding"
+            android:text="@string/detail_view_type_title" />
 
-    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
-        android:id="@+id/detailView_dateContent"
+        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+            android:id="@+id/detailView_typeContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="@dimen/detail_view_title_padding"
+            android:textCursorDrawable="@null" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detailView_detailDateLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/detail_view_title_padding"
-        android:background="@null"
-        android:textCursorDrawable="@null"
-        android:maxEms="10"/>
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/detailView_priceTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/detail_view_price"
-        android:padding="@dimen/detail_view_title_padding"
-        android:maxEms="10"/>
+        <TextView
+            android:id="@+id/detailView_dateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/detail_view_title_padding"
+            android:text="@string/detail_view_date" />
 
-    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
-        android:id="@+id/detailView_priceContent"
+        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+            android:id="@+id/detailView_dateContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:maxEms="10"
+            android:padding="@dimen/detail_view_title_padding"
+            android:textCursorDrawable="@null" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detailView_detailPriceLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/detail_view_title_padding"
-        android:background="@null"
-        android:textCursorDrawable="@null"/>
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/detailView_categoryTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/detail_view_category"
-        android:padding="@dimen/detail_view_title_padding"/>
+        <TextView
+            android:id="@+id/detailView_priceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxEms="10"
+            android:padding="@dimen/detail_view_title_padding"
+            android:text="@string/detail_view_price" />
 
-    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
-        android:id="@+id/detailView_categoryContent"
+        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+            android:id="@+id/detailView_priceContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="@dimen/detail_view_title_padding"
+            android:textCursorDrawable="@null" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detailView_detailCategoryLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/detail_view_title_padding"
-        android:background="@null"
-        android:textCursorDrawable="@null"/>
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/detailView_noteTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/detail_view_note"
-        android:padding="@dimen/detail_view_title_padding"/>
+        <TextView
+            android:id="@+id/detailView_categoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/detail_view_title_padding"
+            android:text="@string/detail_view_category" />
 
-    <com.dreamer.mybudget.ui.activity.custom.TypeEditText
-        android:id="@+id/detailView_noteContent"
+
+        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+            android:id="@+id/detailView_categoryContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="@dimen/detail_view_title_padding"
+            android:textCursorDrawable="@null" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detailView_detailNoteLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/detail_view_title_padding"
-        android:background="@null"
-        android:textCursorDrawable="@null"
-        android:inputType="textMultiLine" />
-</GridLayout>
-</android.support.v7.widget.CardView>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/detailView_noteTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/detail_view_title_padding"
+            android:text="@string/detail_view_note" />
+
+        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+            android:id="@+id/detailView_noteContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="textMultiLine"
+            android:padding="@dimen/detail_view_title_padding"
+            android:textCursorDrawable="@null" />
+    </LinearLayout>
 </LinearLayout>

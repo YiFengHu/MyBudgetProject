@@ -1,12 +1,12 @@
 package com.dreamer.mybudget.ui.activity.custom;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,30 +29,13 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
     private static final String TAG = DetailLayout.class.getSimpleName();
 
     private static final int ITEM_COUNT = 5;
-    public static final String ITEM_NAME_TYPE = "type";
-    public static final String ITEM_NAME_DATE = "date";
-    public static final String ITEM_NAME_PRICE = "price";
-    public static final String ITEM_NAME_CATEGORY = "category";
-    public static final String ITEM_NAME_NOTE = "note";
 
-    private View container = null;
-    private CardView cardView = null;
-    private GridLayout gridLayout = null;
-    private TextView typeTitleTextView = null;
-    private TypeEditText typeContentEditText = null;
-    private TextView dateTitleTextView = null;
-    private TypeEditText dateContentEditText = null;
-    private TextView priceTitleTextView = null;
-    private TypeEditText priceContentEditText = null;
-    private TextView categoryTitleTextView = null;
-    private TypeEditText categoryContentEditText = null;
-    private TextView noteTitleTextView = null;
-    private TypeEditText noteContentEditText = null;
+    private LayoutInflater layoutInflater = null;
+    private LinearLayout container = null;
 
-    private Map<Integer, TypeEditText> allEditText = new HashMap<>(ITEM_COUNT);
-    private Map<Integer, String> allItemNames = new HashMap<>(ITEM_COUNT);
+    private Map<ContentViewType, ContentViewHolder> allRawViews = new HashMap<ContentViewType, ContentViewHolder>(ITEM_COUNT);
 
-    private OnClickListener clickListener = null;
+    private OnClickListener rawLayoutClickListener = null;
 
     private OnDetailItemClick onDetailItemClickListener = null;
 
@@ -60,19 +43,22 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
         this.onDetailItemClickListener = onDetailItemClick;
     }
 
-    public void addSingleCharaterInPrice(String character) {
-        String currentText = priceContentEditText.getText().toString();
+    public void addSingleCharacterInPrice(String character) {
+        TypeEditText editText = getTypeEditText(ContentViewType.price);
+        String currentText = editText.getText().toString();
 
         if(currentText.length() == 10) {
             Toast.makeText(getContext(), "You can only input 10 figures!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        priceContentEditText.setText(currentText+character);
+        editText.setText(currentText+character);
     }
 
-    public void addSingleCharaterInDate(String character) {
-        String currentText = dateContentEditText.getText().toString();
+    public void addSingleCharacterInDate(String character) {
+        TypeEditText editText = getTypeEditText(ContentViewType.date);
+
+        String currentText = editText.getText().toString();
 
         if(currentText.length() == 10){
             Toast.makeText(getContext(), "Date format error!", Toast.LENGTH_SHORT).show();
@@ -82,27 +68,35 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
             currentText += "-";
         }
 
-        dateContentEditText.setText(currentText+character);
+        editText.setText(currentText+character);
     }
 
-    public void backSpaceSingleCharaterInPrice() {
-        String currentText = priceContentEditText.getText().toString();
+    public void backSpaceSingleCharacterInPrice() {
+        TypeEditText editText = getTypeEditText(ContentViewType.price);
+
+        String currentText = editText.getText().toString();
         if(currentText.length() == 6 || currentText.length() == 9){
             currentText = currentText.substring(0, currentText.length()-1);
         }
         if(currentText.length()>0) {
             currentText = currentText.substring(0, currentText.length() - 1);
-            priceContentEditText.setText(currentText);
+            editText.setText(currentText);
         }
     }
 
-    public void backSpaceSingleCharaterInDate() {
-        String currentText = dateContentEditText.getText().toString();
+    public void backSpaceSingleCharacterInDate() {
+        TypeEditText editText = getTypeEditText(ContentViewType.date);
+
+        String currentText = editText.getText().toString();
 
         if(currentText.length()>0) {
             currentText = currentText.substring(0, currentText.length() - 1);
-            dateContentEditText.setText(currentText);
+            editText.setText(currentText);
         }
+    }
+
+    private TypeEditText getTypeEditText(ContentViewType type){
+        return allRawViews.get(type).valueEditText;
     }
 
     @Override
@@ -122,17 +116,18 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
     }
 
     public void clearOptionValues() {
-        for(TypeEditText editText: allEditText.values()){
-            editText.setText("");
+        for(ContentViewHolder holder: allRawViews.values()){
+            holder.valueEditText.setText("");
         }
     }
 
     public interface OnDetailItemClick{
-        void onTypeItemClick();
-        void onDateItemClick();
-        void onPriceItemClick();
-        void onCategoryItemClick();
-        void onNoteItemClick();
+//        void onTypeItemClick();
+//        void onDateItemClick();
+//        void onPriceItemClick();
+//        void onCategoryItemClick();
+//        void onNoteItemClick();
+        void onItemClick(ContentViewType type);
     }
 
     public DetailLayout(Context context) {
@@ -152,39 +147,16 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
 
     private void init(Context context){
 
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        container = layoutInflater.inflate(R.layout.custom_detail_view, null, false);
+        container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
 
-        cardView = (CardView)container.findViewById(R.id.detailView_cardView);
-        cardView.setCardElevation(20);
+        layoutInflater = LayoutInflater.from(context);
 
-        gridLayout = (GridLayout)container.findViewById(R.id.detailView_gridLayout);
-        gridLayout.setColumnCount(2);
-
-        typeTitleTextView = (TextView)container.findViewById(R.id.detailView_typeTitle);
-        typeContentEditText = (TypeEditText)container.findViewById(R.id.detailView_typeContent);
-        allEditText.put(typeContentEditText.getId(), typeContentEditText);
-        allItemNames.put(typeContentEditText.getId(), ITEM_NAME_TYPE);
-
-        dateTitleTextView = (TextView)container.findViewById(R.id.detailView_dateTitle);
-        dateContentEditText = (TypeEditText)container.findViewById(R.id.detailView_dateContent);
-        allEditText.put(dateContentEditText.getId(), dateContentEditText);
-        allItemNames.put(dateContentEditText.getId(), ITEM_NAME_DATE);
-
-        priceTitleTextView = (TextView)container.findViewById(R.id.detailView_priceTitle);
-        priceContentEditText = (TypeEditText)container.findViewById(R.id.detailView_priceContent);
-        allEditText.put(priceContentEditText.getId(), priceContentEditText);
-        allItemNames.put(priceContentEditText.getId(), ITEM_NAME_PRICE);
-
-        categoryTitleTextView = (TextView)container.findViewById(R.id.detailView_categoryTitle);
-        categoryContentEditText = (TypeEditText)container.findViewById(R.id.detailView_categoryContent);
-        allEditText.put(categoryContentEditText.getId(), categoryContentEditText);
-        allItemNames.put(categoryContentEditText.getId(), ITEM_NAME_CATEGORY);
-
-        noteTitleTextView = (TextView)container.findViewById(R.id.detailView_noteTitle);
-        noteContentEditText = (TypeEditText)container.findViewById(R.id.detailView_noteContent);
-        allEditText.put(noteContentEditText.getId(), noteContentEditText);
-        allItemNames.put(noteContentEditText.getId(), ITEM_NAME_NOTE);
+        addContentView(ContentViewType.type);
+        addContentView(ContentViewType.date);
+        addContentView(ContentViewType.price);
+        addContentView(ContentViewType.category);
+        addContentView(ContentViewType.note);
 
         addClickListener();
 
@@ -193,128 +165,148 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
         marginParam.setMargins(20, 20, 20, 20);
 
         addView(container, layoutParams);
+
+
+        setHighlight(ContentViewType.type);
+    }
+
+    private void addContentView(ContentViewType type){
+        View contentView = layoutInflater.inflate(R.layout.custom_detail_view_raw, null, false);
+        ContentViewHolder typeHolder = new ContentViewHolder(contentView, type);
+        typeHolder.titleTextView.setText(type.titleRes);
+
+        allRawViews.put(type, typeHolder);
+        container.addView(contentView);
     }
 
     private void addClickListener(){
-        clickListener = new OnClickListener() {
+        rawLayoutClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
 //                TypeEditText editText = allEditText.get(view.getId());
 //                editText.requestFocus();
+                ContentViewType type = (ContentViewType)view.getTag();
 
                 if(onDetailItemClickListener!=null){
-                    switch (allItemNames.get(view.getId())){
-                        case ITEM_NAME_TYPE:
-                            onDetailItemClickListener.onTypeItemClick();
-                            break;
-
-                        case ITEM_NAME_DATE:
-                            onDetailItemClickListener.onDateItemClick();
-                            break;
-
-                        case ITEM_NAME_PRICE:
-                            onDetailItemClickListener.onPriceItemClick();
-                            break;
-
-                        case ITEM_NAME_CATEGORY:
-                            onDetailItemClickListener.onCategoryItemClick();
-                            break;
-
-                        case ITEM_NAME_NOTE:
-                            onDetailItemClickListener.onNoteItemClick();
-                            break;
-                    }
+                    onDetailItemClickListener.onItemClick(type);
+//                    switch (type){
+//                        case type:
+//                            onDetailItemClickListener.onTypeItemClick();
+//                            break;
+//
+//                        case date:
+//                            onDetailItemClickListener.onDateItemClick();
+//                            break;
+//
+//                        case price:
+//                            onDetailItemClickListener.onPriceItemClick();
+//                            break;
+//
+//                        case category:
+//                            onDetailItemClickListener.onCategoryItemClick();
+//                            break;
+//
+//                        case note:
+//                            onDetailItemClickListener.onNoteItemClick();
+//                            break;
+//                    }
 
                 }
             }
         };
 
-        for(TypeEditText typeEditText: allEditText.values()){
-            typeEditText.setOnClickListener(clickListener);
+        for(ContentViewHolder holder : allRawViews.values()){
+            holder.layout.setOnClickListener(rawLayoutClickListener);
         }
     }
 
-    public void typeDetailType(String typeContent){
-        typeContentEditText.startTypeText(typeContent);
+    public void setHighlight(ContentViewType type) {
+        ContentViewType eachType;
+        for(ContentViewHolder holder: allRawViews.values()){
+
+            eachType = (ContentViewType)holder.layout.getTag();
+            if(eachType.equals(type)){
+                holder.layout.setBackgroundColor(getResources().getColor(R.color.detail_layout_highlight_yellow));
+            }else{
+                holder.layout.setBackgroundColor(getResources().getColor(android.R.color.white));
+            }
+        }
+
     }
 
-    public void typeDetailDate(String typeContent){
-        dateContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailPrice(String typeContent){
-        priceContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailCategory(String typeContent){
-        categoryContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailNote(String typeContent){
-        noteContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailType(String typeContent, TypeEditText.OnTypeListener listener){
-        typeContentEditText.setOnTypeListener(listener);
-        typeContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailDate(String typeContent, TypeEditText.OnTypeListener listener){
-        dateContentEditText.setOnTypeListener(listener);
-        dateContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailPrice(String typeContent, TypeEditText.OnTypeListener listener){
-        priceContentEditText.setOnTypeListener(listener);
-        priceContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailCategory(String typeContent, TypeEditText.OnTypeListener listener){
-        categoryContentEditText.setOnTypeListener(listener);
-        categoryContentEditText.startTypeText(typeContent);
-    }
-
-    public void typeDetailNote(String typeContent, TypeEditText.OnTypeListener listener){
-        noteContentEditText.setOnTypeListener(listener);
-        noteContentEditText.startTypeText(typeContent);
+    public void typeContent(ContentViewType type, String content){
+        allRawViews.get(type).valueEditText.startTypeText(content);
     }
 
     public void readyInputKeyboardOnNote(){
+        TypeEditText noteContentEditText = getTypeEditText(ContentViewType.note);
         noteContentEditText.setEnabled(true);
         noteContentEditText.setOnFocusChangeListener(this);
         noteContentEditText.requestFocus();
     }
 
-    public String getTypeValue(){
-        return typeContentEditText.getText().toString();
+    public String getValue(ContentViewType type){
+        return allRawViews.get(type).valueEditText.getText().toString();
     }
 
-    public String getCategoryValue(){
-        return categoryContentEditText.getText().toString();
+    public boolean isAllContentValueValid(){
+        ContentViewType type;
+        for (ContentViewHolder eachHolder : allRawViews.values()){
+
+            type = (ContentViewType)eachHolder.layout.getTag();
+            if(ContentViewType.note.equals(type)){
+                if(eachHolder.valueEditText.getText() != null){
+                    continue;
+                }else{
+                    return false;
+                }
+
+            }else{
+                if(!isEmpty(eachHolder.valueEditText.getText().toString())){
+                    continue;
+                }else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    public String getDateValue(){
-        return dateContentEditText.getText().toString();
-    }
+    public ContentViewType getInvalidContentType(){
+        ContentViewType type;
+        for (ContentViewHolder eachHolder : allRawViews.values()){
 
-    public String getPriceValue(){
-        return priceContentEditText.getText().toString();
-    }
+            type = (ContentViewType)eachHolder.layout.getTag();
+            if(ContentViewType.note.equals(type)){
+                if(eachHolder.valueEditText.getText() != null){
+                    continue;
+                }else{
+                    return type;
+                }
 
-    public String getNoteValue(){
-        return noteContentEditText.getText().toString();
+            }else{
+                if(!isEmpty(eachHolder.valueEditText.getText().toString())){
+                    continue;
+                }else {
+                    return type;
+                }
+            }
+        }
+
+        return null;
     }
 
     public Detail convertToDetail(){
         long categoryCid = DBManager.getInstance().getCategoryDBHandler()
-                .queryCategory(CategoryType.getCategoryType(getTypeValue()), getCategoryValue()).getCid();
+                .queryCategory(CategoryType.getCategoryType(getValue(ContentViewType.type)), getValue(ContentViewType.category)).getCid();
 
         Detail detail = new Detail();
-        detail.setIo(getTypeValue());
-        detail.setTime(getTime(getDateValue()));
-        detail.setPrice(Integer.valueOf(getPriceValue()));
+        detail.setIo(getValue(ContentViewType.type));
+        detail.setTime(getTime(getValue(ContentViewType.date)));
+        detail.setPrice(Integer.valueOf(getValue(ContentViewType.price)));
         detail.setCategory_cid(categoryCid);
-        detail.setMark(getNoteValue());
+        detail.setMark(getValue(ContentViewType.note));
         return detail;
     }
 
@@ -328,5 +320,39 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
             return System.currentTimeMillis();
         }
 
+    }
+
+    private class ContentViewHolder{
+        public View layout;
+        public TextView titleTextView;
+        public TypeEditText valueEditText;
+
+        ContentViewHolder(View rowContainer, ContentViewType type){
+            layout = rowContainer;
+            layout.setTag(type);
+            titleTextView = (TextView)layout.findViewById(R.id.detailRawView_titleTextView);
+            valueEditText = (TypeEditText)layout.findViewById(R.id.detailRawView_valueEditText);
+        }
+    }
+
+    public enum ContentViewType {
+        type("type", R.string.add_detail_view_type),
+        date("date", R.string.add_detail_view_date),
+        price("price", R.string.add_detail_view_price),
+        category("category", R.string.add_detail_view_category),
+        note("note", R.string.add_detail_view_note);
+
+        public final String typeName;
+        public final int titleRes;
+
+        private ContentViewType(String typeName, int titleRes){
+            this.typeName = typeName;
+            this.titleRes = titleRes;
+
+        }
+    }
+
+    private boolean isEmpty(String str){
+        return str == null || str.isEmpty();
     }
 }

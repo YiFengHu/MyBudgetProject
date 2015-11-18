@@ -1,13 +1,13 @@
 package com.dreamer.mybudget.ui.activity;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -20,8 +20,8 @@ import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DetailContent;
 import com.dreamer.mybudget.ui.activity.custom.DetailLayout;
 import com.dreamer.mybudget.ui.adapter.AddDetailOptionAdapter;
-
 import com.dreamer.mybudget.ui.adapter.itemData.DetailOptionItem;
+import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
@@ -29,10 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * @deprecated
- * Created by Roder Hu on 15/6/14.
+ * Created by Roder Hu on 15/8/26.
  */
 public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
 
@@ -51,40 +49,36 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private List<DetailOptionItem> categoryOptionsList = null;
     private List<DetailOptionItem> priceOptionsList = null;
     private List<DetailOptionItem> dateOptionsList = null;
-    private List<DetailOptionItem> noteOptionsList = null;
-
-
+//    private List<DetailOptionItem> noteOptionsList = null;
     private String detailType = "";
+
+
     private Toolbar toolbar = null;
     private DetailLayout detailLayout = null;
 
     private GridView gridView = null;
+    private Button submitButton = null;
     private AddDetailOptionAdapter optionAdapter = null;
     private CategoryType currentCategoryType = CategoryType.Expense;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_detail);
 
+        initLayout();
+        initToolBar();
+
         initOptionDatas();
 
-        initLayout();
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null) {
             detailType = bundle.getString(DETAIL_TYPE_KEY);
         }
 
-        initActionBar();
-
         detailLayout.setOnDetailItemClick(this);
         nextOption(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     private void initOptionDatas() {
@@ -92,14 +86,14 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         categoryOptionsList = new ArrayList<>();
         priceOptionsList = new ArrayList<>();
         dateOptionsList = new ArrayList<>();
-        noteOptionsList = new ArrayList<>();
+//        noteOptionsList = new ArrayList<>();
 
         optionsMap = new HashMap<>();
         optionsMap.put(DetailContent.Type, getTypeOptions());
         optionsMap.put(DetailContent.Category, getCategoryOptions(currentCategoryType));
         optionsMap.put(DetailContent.Price, getPriceOptions());
         optionsMap.put(DetailContent.Date, getDateOptions());
-        optionsMap.put(DetailContent.Note, getNoteOptions());
+//        optionsMap.put(DetailContent.Note, getNoteOptions());
 
         allContents = new ArrayList<>(5);
         allContents.add(DetailContent.Type);
@@ -114,14 +108,33 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         Log.d(TAG, "initLayout");
 
         detailLayout = (DetailLayout)findViewById(R.id.addDetail_detailLayout);
-        gridView = (GridView) findViewById(R.id.addDetail_optionGridView);
-
+        gridView = (GridView)findViewById(R.id.addDetail_optionGridView);
+        submitButton =  (Button) findViewById(R.id.addDetail_submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionFinish();
+            }
+        });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    private void initToolBar() {
+        toolbar = (Toolbar)findViewById(R.id.addDetail_toolbar);
+        if(Build.VERSION.SDK_INT>=21) {
+            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
+        }
+
+        toolbar.setTitle(getString(R.string.add_detail_title));
+        setSupportActionBar(toolbar);
+
+        //must place after setSupportActionBar(toolbar) method. - Roder
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void resetOption(DetailContent content){
@@ -133,7 +146,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         Log.d(TAG, "nextOption: " + isFirstOption);
 
         int indexOfDetailCotent = allContents.indexOf(mCurrentDetailContent);
-        Log.d(TAG, "indexOfDetailCotent: "+indexOfDetailCotent);
+        Log.d(TAG, "indexOfDetailCotent: " + indexOfDetailCotent);
 
         if(!isFirstOption) {
             indexOfDetailCotent += 1;
@@ -148,9 +161,38 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     }
 
     private void prepareOptions(DetailContent detailContent){
-        setGridViewAdapter(detailContent);
+        prepareView(detailContent);
+
         if(DetailContent.Note.equals(detailContent)){
             detailLayout.readyInputKeyboardOnNote();
+
+        }else if(DetailContent.Date.equals(detailContent)){
+
+            transactionDateRangePickerFragment(new DateRangePickerFragment.OnDateRangeSelectedListener() {
+                @Override
+                public void onDateRangeSelected(int day, int month, int year) {
+                    StringBuilder date = new StringBuilder();
+                    date.append(year).append("-").append(month).append("-").append(day);
+                    detailLayout.typeContent(DetailLayout.ContentViewType.date, date.toString());
+
+                    nextOption(false);
+                }
+            });
+
+        }
+    }
+
+    private void prepareView(DetailContent detailContent) {
+        detailLayout.setHighlight(getContentViewType(detailContent));
+
+        if(DetailContent.Note.equals(detailContent)){
+            gridView.setVisibility(View.GONE);
+            submitButton.setVisibility(View.VISIBLE);
+
+        }else{
+            submitButton.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
+            setGridViewAdapter(detailContent);
         }
     }
 
@@ -171,71 +213,66 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     }
 
     private void onOptionFinish() {
-        Detail detail = detailLayout.convertToDetail();
-        DBManager.getInstance().getDetailDBHandler().insertDetail(detail);
-        Toast.makeText(this, "Detail: " + detail.getIo()
-                + ", " + detail.getCategoryName().getCategory_name()
-                + ", " + detail.getTime()
-                + ", " + detail.getPrice()
-                + ", " + detail.getMark(), Toast.LENGTH_LONG).show();
+        if(detailLayout.isAllContentValueValid()) {
+            Detail detail = detailLayout.convertToDetail();
+            DBManager.getInstance().getDetailDBHandler().insertDetail(detail);
+            Toast.makeText(this, "Detail: " + detail.getIo()
+                    + ", " + detail.getCategoryName().getCategory_name()
+                    + ", " + detail.getTime()
+                    + ", " + detail.getPrice()
+                    + ", " + detail.getMark(), Toast.LENGTH_LONG).show();
 
-        clearDetailLayoutValues();
+//            clearDetailLayoutValues();
+
+            finish();
+        }else{
+            DetailLayout.ContentViewType invalidType = detailLayout.getInvalidContentType();
+            resetOption(getDetailContent(invalidType));
+            Toast.makeText(this, R.string.add_detail_value_invalid_hint, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void clearDetailLayoutValues(){
         detailLayout.clearOptionValues();
     }
 
-    private void initActionBar() {
-        toolbar = (Toolbar)findViewById(R.id.addDetail_toolbar);
-        if(Build.VERSION.SDK_INT>=21) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
-        }
-        toolbar.setTitle(getString(R.string.add_detail_title));
+//    @Override
+//    public void onTypeItemClick() {
+//        resetOption(DetailContent.Type);
+//    }
+//
+//    @Override
+//    public void onDateItemClick() {
+//        resetOption(DetailContent.Date);
+//    }
+//
+//    @Override
+//    public void onPriceItemClick() {
+//        resetOption(DetailContent.Price);
+//    }
+//
+//    @Override
+//    public void onCategoryItemClick() {
+//        resetOption(DetailContent.Category);
+//    }
+//
+//    @Override
+//    public void onNoteItemClick() {
+//        resetOption(DetailContent.Note);
+//    }
 
-        setSupportActionBar(toolbar);
-
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
-
-    @Override
-    public void onTypeItemClick() {
-        resetOption(DetailContent.Type);
-    }
-
-    @Override
-    public void onDateItemClick() {
-        resetOption(DetailContent.Date);
-    }
 
     @Override
-    public void onPriceItemClick() {
-        resetOption(DetailContent.Price);
+    public void onItemClick(DetailLayout.ContentViewType type) {
+        resetOption(getDetailContent(type));
     }
-
-    @Override
-    public void onCategoryItemClick() {
-        resetOption(DetailContent.Category);
-    }
-
-    @Override
-    public void onNoteItemClick() {
-        resetOption(DetailContent.Note);
-    }
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         DetailOptionItem optionItem = optionAdapter.getItem(position);
         switch (optionItem.getDetailContent()){
             case Type:
-                detailLayout.typeDetailType(optionItem.getOption());
+                detailLayout.typeContent(DetailLayout.ContentViewType.type, optionItem.getOption());
                 currentCategoryType = CategoryType.valueOf(optionItem.getOption());
                 optionsMap.put(DetailContent.Category, getCategoryOptions(currentCategoryType));
 
@@ -244,7 +281,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
                 break;
 
             case Category:
-                detailLayout.typeDetailCategory(optionItem.getOption());
+                detailLayout.typeContent(DetailLayout.ContentViewType.category, optionItem.getOption());
                 nextOption(false);
 
                 break;
@@ -255,10 +292,10 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
                     nextOption(false);
 
                 }else if(DETAIL_OPTION_BACK_SPACE_TAG.equals(optionItem.getOption())) {
-                    detailLayout.backSpaceSingleCharaterInDate();
+                    detailLayout.backSpaceSingleCharacterInDate();
 
                 }else{
-                    detailLayout.addSingleCharaterInDate(optionItem.getOption());
+                    detailLayout.addSingleCharacterInDate(optionItem.getOption());
                 }
                 break;
 
@@ -268,10 +305,10 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
                     nextOption(false);
 
                 }else if(DETAIL_OPTION_BACK_SPACE_TAG.equals(optionItem.getOption())) {
-                    detailLayout.backSpaceSingleCharaterInPrice();
+                    detailLayout.backSpaceSingleCharacterInPrice();
 
                 }else{
-                    detailLayout.addSingleCharaterInPrice(optionItem.getOption());
+                    detailLayout.addSingleCharacterInPrice(optionItem.getOption());
                 }
                 break;
 
@@ -300,7 +337,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
 
         categoryOptionsList.clear();
         List<Category> categories = DBManager.getInstance()
-                    .getCategoryDBHandler().queryCategories(categoryType);
+                .getCategoryDBHandler().queryCategories(categoryType);
         for(Category category : categories){
             categoryOptionsList.add(new DetailOptionItem(DetailContent.Category ,category.getCategory_name()));
         }
@@ -348,21 +385,48 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         return dateOptionsList;
     }
 
-    private List<DetailOptionItem> getNoteOptions(){
-        if(noteOptionsList.isEmpty()){
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, ""));
-            noteOptionsList.add(new DetailOptionItem(DetailContent.Note, DETAIL_OPTION_NEXT_TAG));
-        }
+    public DetailContent getDetailContent(DetailLayout.ContentViewType type){
+        switch (type) {
+            case type:
+                return DetailContent.Type;
 
-        return noteOptionsList;
+            case date:
+                return DetailContent.Date;
+
+            case price:
+                return DetailContent.Price;
+
+            case category:
+                return DetailContent.Category;
+
+            case note:
+                return DetailContent.Note;
+
+            default:
+                return null;
+        }
     }
+
+    public DetailLayout.ContentViewType getContentViewType(DetailContent content){
+        switch (content) {
+            case Type:
+                return DetailLayout.ContentViewType.type;
+
+            case Date:
+                return DetailLayout.ContentViewType.date;
+
+            case Price:
+                return DetailLayout.ContentViewType.price;
+
+            case Category:
+                return DetailLayout.ContentViewType.category;
+
+            case Note:
+                return DetailLayout.ContentViewType.note;
+
+            default:
+                return null;
+        }
+    }
+
 }

@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Detail Layout -->
+    <color name="detail_layout_highlight_yellow">#FFECB3</color>
 </resources>

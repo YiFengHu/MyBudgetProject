@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dreamer.mybudget.R;
-import com.dreamer.mybudget.ui.fragment.AddDetailActivity;
+import com.dreamer.mybudget.ui.activity.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
 
 /**
