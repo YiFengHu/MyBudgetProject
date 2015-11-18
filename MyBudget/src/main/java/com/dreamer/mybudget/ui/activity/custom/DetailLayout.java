@@ -234,6 +234,11 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
 
     }
 
+    public void typeContent(ContentViewType type, String content, TypeEditText.OnTypeListener lisnter){
+        allRawViews.get(type).valueEditText.setOnTypeListener(lisnter);
+        allRawViews.get(type).valueEditText.startTypeText(content);
+    }
+
     public void typeContent(ContentViewType type, String content){
         allRawViews.get(type).valueEditText.startTypeText(content);
     }

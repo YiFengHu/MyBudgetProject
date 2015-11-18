@@ -19,6 +19,7 @@ import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DetailContent;
 import com.dreamer.mybudget.ui.activity.custom.DetailLayout;
+import com.dreamer.mybudget.ui.activity.custom.TypeEditText;
 import com.dreamer.mybudget.ui.adapter.AddDetailOptionAdapter;
 import com.dreamer.mybudget.ui.adapter.itemData.DetailOptionItem;
 import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
@@ -49,7 +50,6 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private List<DetailOptionItem> categoryOptionsList = null;
     private List<DetailOptionItem> priceOptionsList = null;
     private List<DetailOptionItem> dateOptionsList = null;
-//    private List<DetailOptionItem> noteOptionsList = null;
     private String detailType = "";
 
 
@@ -86,14 +86,12 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         categoryOptionsList = new ArrayList<>();
         priceOptionsList = new ArrayList<>();
         dateOptionsList = new ArrayList<>();
-//        noteOptionsList = new ArrayList<>();
 
         optionsMap = new HashMap<>();
         optionsMap.put(DetailContent.Type, getTypeOptions());
         optionsMap.put(DetailContent.Category, getCategoryOptions(currentCategoryType));
         optionsMap.put(DetailContent.Price, getPriceOptions());
         optionsMap.put(DetailContent.Date, getDateOptions());
-//        optionsMap.put(DetailContent.Note, getNoteOptions());
 
         allContents = new ArrayList<>(5);
         allContents.add(DetailContent.Type);
@@ -272,11 +270,24 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         DetailOptionItem optionItem = optionAdapter.getItem(position);
         switch (optionItem.getDetailContent()){
             case Type:
-                detailLayout.typeContent(DetailLayout.ContentViewType.type, optionItem.getOption());
-                currentCategoryType = CategoryType.valueOf(optionItem.getOption());
-                optionsMap.put(DetailContent.Category, getCategoryOptions(currentCategoryType));
+                final CategoryType type = CategoryType.valueOf(optionItem.getOption());
+                detailLayout.typeContent(
+                        DetailLayout.ContentViewType.type,
+                        optionItem.getOption(),
+                        new TypeEditText.OnTypeListener() {
+                            @Override
+                            public void onTypeStart() {
 
-                nextOption(false);
+                            }
+
+                            @Override
+                            public void onTypeFinish() {
+                                currentCategoryType = type;
+                                optionsMap.put(DetailContent.Category, getCategoryOptions(currentCategoryType));
+
+                                nextOption(false);
+                            }
+                        });
 
                 break;
 

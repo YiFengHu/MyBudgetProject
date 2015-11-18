@@ -35,4 +35,10 @@
         <item name="android:textColor">#000</item>
     </style>
 
+    <style name="CustomFAB" parent="Widget.Design.FloatingActionButton">
+        <item name="backgroundTint">?attr/colorPrimaryDark</item>
+        <item name="rippleColor">?attr/colorAccent</item>
+
+    </style>
+
 </resources>
