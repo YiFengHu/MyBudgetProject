@@ -1,12 +1,14 @@
-package com.dreamer.mybudget.ui.activity;
+package com.dreamer.mybudget.ui.fragment;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -14,14 +16,14 @@ import android.widget.Toast;
 import com.dreamer.mybudget.Category;
 import com.dreamer.mybudget.Detail;
 import com.dreamer.mybudget.R;
-import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DetailContent;
+import com.dreamer.mybudget.ui.activity.MainActivity;
 import com.dreamer.mybudget.ui.activity.custom.DetailLayout;
 import com.dreamer.mybudget.ui.adapter.AddDetailOptionAdapter;
-
 import com.dreamer.mybudget.ui.adapter.itemData.DetailOptionItem;
+import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
@@ -29,13 +31,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * Created by Roder Hu on 15/6/14.
+ * Created by Roder Hu on 15/8/26.
  */
-public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
+public class AddDetailFragment extends Fragment implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
 
-    private static final String TAG = AddDetailActivity.class.getSimpleName();
+    private static final String TAG = AddDetailFragment.class.getSimpleName();
     public static final String DETAIL_TYPE_KEY = "DETAIL_TYPE_KEY";
     public static final String DETAIL_OPTION_NEXT_TAG = "Next";
     public static final String DETAIL_OPTION_BACK_SPACE_TAG = "Back";
@@ -51,9 +52,10 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private List<DetailOptionItem> priceOptionsList = null;
     private List<DetailOptionItem> dateOptionsList = null;
     private List<DetailOptionItem> noteOptionsList = null;
-
-
     private String detailType = "";
+
+
+    private View mRootView = null;
     private Toolbar toolbar = null;
     private DetailLayout detailLayout = null;
 
@@ -62,28 +64,31 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private CategoryType currentCategoryType = CategoryType.Expense;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_detail);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        mRootView = inflater.inflate(R.layout.activity_add_detail, container, false);
 
         initOptionDatas();
 
         initLayout();
 
-        Bundle bundle = getIntent().getExtras();
+        Bundle bundle = getArguments();
         if(bundle!=null) {
             detailType = bundle.getString(DETAIL_TYPE_KEY);
         }
 
-        initActionBar();
+        ((MainActivity)getActivity()).setToolBarWithTitle(getString(R.string.add_detail_title));
 
         detailLayout.setOnDetailItemClick(this);
         nextOption(true);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        return mRootView;
     }
 
     private void initOptionDatas() {
@@ -112,15 +117,9 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private void initLayout(){
         Log.d(TAG, "initLayout");
 
-        detailLayout = (DetailLayout)findViewById(R.id.addDetail_detailLayout);
-        gridView = (GridView) findViewById(R.id.addDetail_optionGridView);
+        detailLayout = (DetailLayout)mRootView.findViewById(R.id.addDetail_detailLayout);
+        gridView = (GridView) mRootView.findViewById(R.id.addDetail_optionGridView);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 
     private void resetOption(DetailContent content){
@@ -132,7 +131,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         Log.d(TAG, "nextOption: " + isFirstOption);
 
         int indexOfDetailCotent = allContents.indexOf(mCurrentDetailContent);
-        Log.d(TAG, "indexOfDetailCotent: "+indexOfDetailCotent);
+        Log.d(TAG, "indexOfDetailCotent: " + indexOfDetailCotent);
 
         if(!isFirstOption) {
             indexOfDetailCotent += 1;
@@ -150,13 +149,27 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         setGridViewAdapter(detailContent);
         if(DetailContent.Note.equals(detailContent)){
             detailLayout.readyInputKeyboardOnNote();
+
+        }else if(DetailContent.Date.equals(detailContent)){
+
+            ((MainActivity)getActivity()).transactionDateRangePickerFragment(new DateRangePickerFragment.OnDateRangeSelectedListener() {
+                @Override
+                public void onDateRangeSelected(int day, int month, int year) {
+                    StringBuilder date = new StringBuilder();
+                    date.append(year).append("-").append(month).append("-").append(day);
+                    detailLayout.typeDetailDate(date.toString());
+
+                    nextOption(false);
+                }
+            });
+
         }
     }
 
 
     private void setGridViewAdapter(DetailContent detailContent){
         List<DetailOptionItem> optionList = optionsMap.get(detailContent);
-        optionAdapter = new AddDetailOptionAdapter(this, optionList);
+        optionAdapter = new AddDetailOptionAdapter(getActivity(), optionList);
         AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(
                 optionAdapter);
 
@@ -172,7 +185,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private void onOptionFinish() {
         Detail detail = detailLayout.convertToDetail();
         DBManager.getInstance().getDetailDBHandler().insertDetail(detail);
-        Toast.makeText(this, "Detail: " + detail.getIo()
+        Toast.makeText(getActivity(), "Detail: " + detail.getIo()
                 + ", " + detail.getCategoryName().getCategory_name()
                 + ", " + detail.getTime()
                 + ", " + detail.getPrice()
@@ -183,24 +196,6 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
 
     private void clearDetailLayoutValues(){
         detailLayout.clearOptionValues();
-    }
-
-    private void initActionBar() {
-        toolbar = (Toolbar)findViewById(R.id.addDetail_toolbar);
-        if(Build.VERSION.SDK_INT>=21) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
-        }
-        toolbar.setTitle(getString(R.string.add_detail_title));
-
-        setSupportActionBar(toolbar);
-
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     @Override
@@ -299,7 +294,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
 
         categoryOptionsList.clear();
         List<Category> categories = DBManager.getInstance()
-                    .getCategoryDBHandler().queryCategories(categoryType);
+                .getCategoryDBHandler().queryCategories(categoryType);
         for(Category category : categories){
             categoryOptionsList.add(new DetailOptionItem(DetailContent.Category ,category.getCategory_name()));
         }

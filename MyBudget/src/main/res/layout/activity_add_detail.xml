@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card="http://schemas.android.com/apk/res-auto"
@@ -20,8 +21,8 @@
         android:layout_marginRight="@dimen/activity_padding_5dp"/>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/activity_margin_20dp"
         android:background="?attr/colorPrimary">
 
@@ -31,11 +32,12 @@
             <!--android:layout_height="wrap_content"/>-->
         <GridView
             android:id="@+id/addDetail_optionGridView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:numColumns="3"
             android:gravity="center"
-            android:padding="10dp"/>
+            android:layout_margin="@dimen/activity_margin_20dp"
+            android:background="@drawable/background_add_detail_option_grid"/>
 
         </RelativeLayout>
 </LinearLayout>

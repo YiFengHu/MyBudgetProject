@@ -41,4 +41,10 @@
     <string name="action_example">Example action</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Date Picker -->
+    <string name="confirm">Confirm</string>
+    <string name="title_tab_start_date">Start Date</string>
+    <string name="ttile_tab_end_date">End Date</string>
+
 </resources>

@@ -121,6 +121,12 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
         }
     }
 
+    public void clearOptionValues() {
+        for(TypeEditText editText: allEditText.values()){
+            editText.setText("");
+        }
+    }
+
     public interface OnDetailItemClick{
         void onTypeItemClick();
         void onDateItemClick();
@@ -145,10 +151,13 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
     }
 
     private void init(Context context){
+
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         container = layoutInflater.inflate(R.layout.custom_detail_view, null, false);
 
         cardView = (CardView)container.findViewById(R.id.detailView_cardView);
+        cardView.setCardElevation(20);
+
         gridLayout = (GridLayout)container.findViewById(R.id.detailView_gridLayout);
         gridLayout.setColumnCount(2);
 
@@ -180,7 +189,10 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
         addClickListener();
 
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        addView(cardView, layoutParams);
+        MarginLayoutParams marginParam = new MarginLayoutParams(layoutParams);
+        marginParam.setMargins(20, 20, 20, 20);
+
+        addView(container, layoutParams);
     }
 
     private void addClickListener(){
@@ -296,7 +308,14 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
     public Detail convertToDetail(){
         long categoryCid = DBManager.getInstance().getCategoryDBHandler()
                 .queryCategory(CategoryType.getCategoryType(getTypeValue()), getCategoryValue()).getCid();
-        return new Detail(0L, getTypeValue(), getTime(getDateValue()), Integer.valueOf(getPriceValue()), categoryCid, getNoteValue());
+
+        Detail detail = new Detail();
+        detail.setIo(getTypeValue());
+        detail.setTime(getTime(getDateValue()));
+        detail.setPrice(Integer.valueOf(getPriceValue()));
+        detail.setCategory_cid(categoryCid);
+        detail.setMark(getNoteValue());
+        return detail;
     }
 
     private long getTime(String dateString){

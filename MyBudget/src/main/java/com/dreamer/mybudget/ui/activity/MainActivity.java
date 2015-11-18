@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +21,9 @@ import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DefaultCategory;
+import com.dreamer.mybudget.ui.fragment.AddDetailFragment;
+import com.dreamer.mybudget.ui.fragment.MainFragment;
+import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 
 import java.util.List;
 
@@ -27,20 +31,25 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener{
 
     private static String TAG = MainActivity.class.getSimpleName();
+
     private Toolbar toolbar = null;
-    private FloatingActionButton addButton = null;
+//    private FloatingActionButton addButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initActionBar();
-        addButton = (FloatingActionButton)findViewById(R.id.main_addButton);
-        addButton.setOnClickListener(this);
+//        addButton = (FloatingActionButton)findViewById(R.id.main_addButton);
+//        addButton.setOnClickListener(this);
 
 //        insertDetail();
 //        queryAllDetail();
 
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, new MainFragment()).commit();
     }
 
     private void insertDetail() {
@@ -64,22 +73,42 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private void queryAllDetail() {
         List<Detail> details = DBManager.getInstance().getDetailDBHandler().getAllDetail();
         for(int i=0; i<details.size();i++) {
-            Log.i(TAG, "did: " + details.get(i).getDid()+", mark:"+details.get(i).getMark());
+            Log.i(TAG, "did: " + details.get(i).getDid() + ", mark:" + details.get(i).getMark());
         }
     }
 
     private void initActionBar() {
         toolbar = (Toolbar)findViewById(R.id.main_toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
         if(Build.VERSION.SDK_INT>=21) {
             toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
         }
 
+        toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
         //must place after setSupportActionBar(toolbar) method. - Roder
         toolbar.setNavigationIcon(R.drawable.ic_launcher);
         toolbar.setOnMenuItemClickListener(this);
+    }
+
+    public void setMainToolBar(){
+        toolbar.setTitle(getString(R.string.app_name));
+        setSupportActionBar(toolbar);
+
+        toolbar.setNavigationIcon(R.drawable.ic_launcher);
+        toolbar.setOnMenuItemClickListener(this);
+    }
+
+    public void setToolBarWithTitle(String title){
+            toolbar.setTitle(title);
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
     }
 
     @Override
@@ -104,11 +133,37 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.main_addButton:
+//        switch (v.getId()){
+//            case R.id.main_addButton:
+//
+//                startActivity(new Intent(this, AddDetailActivity.class));
+//                break;
+//        }
+    }
 
-                startActivity(new Intent(this, AddDetailActivity.class));
-                break;
+    public void transactionAddDetailFragment(String detailType){
+        Bundle bundle = new Bundle();
+        if(detailType!=null) {
+            bundle.putString(AddDetailFragment.DETAIL_TYPE_KEY, detailType);
         }
+
+        AddDetailFragment addDetailFragment = new AddDetailFragment();
+        addDetailFragment.setArguments(bundle);
+
+        getSupportFragmentManager().popBackStack();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_container, addDetailFragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+
+    }
+
+    public void transactionDateRangePickerFragment(DateRangePickerFragment.OnDateRangeSelectedListener callback){
+
+        DateRangePickerFragment dateRangePickerFragment = DateRangePickerFragment.newInstance(callback, false);
+        dateRangePickerFragment.show(getSupportFragmentManager(), null);
     }
 }
