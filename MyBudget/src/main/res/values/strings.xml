@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">MyBudget</string>
 
+    <!-- Main page -->
+    <string name="main_menu_details">Details</string>
+
     <!-- Detail Data Title -->
     <string name="detail_view_type_title">Type:</string>
     <string name="detail_view_date">Date:</string>
@@ -28,7 +31,7 @@
     <string name="category_income_bonus">Bonus</string>
     <string name="category_income_other">Other</string>
 
-    <!--- Add Detail -->
+    <!-- Add Detail -->
     <string name="add_detail_title">Add Detail</string>
     <string name="add_detail_submit">Submit</string>
     <string name="add_detail_view_type">Type</string>
@@ -37,6 +40,12 @@
     <string name="add_detail_view_category">Category</string>
     <string name="add_detail_view_note">Note</string>
     <string name="add_detail_value_invalid_hint">Some content value invalid!</string>
+
+    <!-- Detail List -->
+    <string name="detail_list_title">Detail List</string>
+    <string name="detail_menu_daily">Daily</string>
+    <string name="detail_menu_weekly">Weekly</string>
+    <string name="detail_menu_monthly">Monthly</string>
 
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>

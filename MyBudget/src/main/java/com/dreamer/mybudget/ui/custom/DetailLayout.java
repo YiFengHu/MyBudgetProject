@@ -121,11 +121,6 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
     }
 
     public interface OnDetailItemClick{
-//        void onTypeItemClick();
-//        void onDateItemClick();
-//        void onPriceItemClick();
-//        void onCategoryItemClick();
-//        void onNoteItemClick();
         void onItemClick(ContentViewType type);
     }
 

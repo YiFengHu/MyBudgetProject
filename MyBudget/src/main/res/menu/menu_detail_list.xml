@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/detailList_daily"
+        android:title="@string/detail_menu_daily"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/detailList_weekly"
+        android:title="@string/detail_menu_weekly"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/detailList_monthly"
+        android:title="@string/detail_menu_monthly"
+        app:showAsAction="never" />
+
+</menu>

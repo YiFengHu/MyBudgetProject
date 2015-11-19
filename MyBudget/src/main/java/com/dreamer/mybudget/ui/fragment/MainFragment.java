@@ -5,28 +5,31 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.dreamer.mybudget.R;
+import com.dreamer.mybudget.base.BaseFragment;
 import com.dreamer.mybudget.ui.activity.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
 
 /**
  * Created by Roder Hu on 15/8/26.
  */
-public class MainFragment extends Fragment implements View.OnClickListener{
-
+public class MainFragment extends BaseFragment implements View.OnClickListener, Toolbar.OnMenuItemClickListener{
 
     private View mRootView = null;
     private FloatingActionButton addButton = null;
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -40,9 +43,15 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).setMainToolBar();
+        ((MainActivity)getActivity()).setMainToolBar(this);
 
     }
 
@@ -56,5 +65,15 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.main_details:
+                ((MainActivity)getActivity()).transactionDetailListFragment();
+                return true;
+        }
+        return false;
     }
 }

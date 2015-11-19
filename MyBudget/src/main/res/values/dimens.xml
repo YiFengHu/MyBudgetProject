@@ -35,4 +35,7 @@
     <dimen name="option_grid_padding">10dp</dimen>
     <dimen name="btn_250dp">250dp</dimen>
 
+    <!-- RecyclerView -->
+    <dimen name="detail_list_spacing">5dp</dimen>
+
 </resources>

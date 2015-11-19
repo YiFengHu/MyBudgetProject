@@ -3,6 +3,7 @@ package com.dreamer.mybudget.ui.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,13 +20,13 @@ import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DefaultCategory;
+import com.dreamer.mybudget.ui.fragment.DetailListFragment;
 import com.dreamer.mybudget.ui.fragment.MainFragment;
-import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 
 import java.util.List;
 
 
-public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private static String TAG = MainActivity.class.getSimpleName();
 
@@ -85,18 +86,21 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
         //must place after setSupportActionBar(toolbar) method. - Roder
         toolbar.setNavigationIcon(R.drawable.ic_launcher);
-        toolbar.setOnMenuItemClickListener(this);
+//        toolbar.setOnMenuItemClickListener(this);
     }
 
-    public void setMainToolBar(){
+    public void setMainToolBar(Toolbar.OnMenuItemClickListener listener){
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationIcon(R.drawable.ic_launcher);
-        toolbar.setOnMenuItemClickListener(this);
+
+        if(listener!=null) {
+            toolbar.setOnMenuItemClickListener(listener);
+        }
     }
 
-    public void setToolBarWithTitle(String title){
+    public void setToolBarWithTitle(String title, Toolbar.OnMenuItemClickListener listener){
             toolbar.setTitle(title);
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -106,27 +110,31 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                     onBackPressed();
                 }
             });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
-
-            case R.id.action_example:
-                Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                break;
-
-            default:
-                break;
+        if(listener!=null) {
+            toolbar.setOnMenuItemClickListener(listener);
         }
-        return true;
     }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onMenuItemClick(MenuItem item) {
+//        switch (item.getItemId()){
+//
+//            case R.id.action_example:
+//                Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+//                break;
+//
+//            default:
+//                break;
+//        }
+//        return true;
+//    }
 
     @Override
     public void onClick(View v) {
@@ -137,4 +145,20 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //                break;
 //        }
     }
+
+    public void transactionDetailListFragment(){
+        transactionFragment(new DetailListFragment());
+    }
+
+    private void transactionFragment(Fragment fragment){
+        getSupportFragmentManager().popBackStack();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+    }
+
 }
