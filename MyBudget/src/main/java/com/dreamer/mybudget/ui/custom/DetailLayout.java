@@ -1,11 +1,10 @@
-package com.dreamer.mybudget.ui.activity.custom;
+package com.dreamer.mybudget.ui.custom;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -183,34 +182,10 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
         rawLayoutClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-//                TypeEditText editText = allEditText.get(view.getId());
-//                editText.requestFocus();
                 ContentViewType type = (ContentViewType)view.getTag();
 
                 if(onDetailItemClickListener!=null){
                     onDetailItemClickListener.onItemClick(type);
-//                    switch (type){
-//                        case type:
-//                            onDetailItemClickListener.onTypeItemClick();
-//                            break;
-//
-//                        case date:
-//                            onDetailItemClickListener.onDateItemClick();
-//                            break;
-//
-//                        case price:
-//                            onDetailItemClickListener.onPriceItemClick();
-//                            break;
-//
-//                        case category:
-//                            onDetailItemClickListener.onCategoryItemClick();
-//                            break;
-//
-//                        case note:
-//                            onDetailItemClickListener.onNoteItemClick();
-//                            break;
-//                    }
-
                 }
             }
         };
@@ -335,6 +310,8 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
         ContentViewHolder(View rowContainer, ContentViewType type){
             layout = rowContainer;
             layout.setTag(type);
+            layout.setEnabled(true);
+            layout.setClickable(true);
             titleTextView = (TextView)layout.findViewById(R.id.detailRawView_titleTextView);
             valueEditText = (TypeEditText)layout.findViewById(R.id.detailRawView_valueEditText);
         }

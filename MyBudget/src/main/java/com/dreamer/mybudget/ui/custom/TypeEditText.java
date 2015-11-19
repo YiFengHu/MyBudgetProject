@@ -1,4 +1,4 @@
-package com.dreamer.mybudget.ui.activity.custom;
+package com.dreamer.mybudget.ui.custom;
 
 import android.app.Activity;
 import android.content.Context;

@@ -18,7 +18,8 @@
             android:id="@+id/datePicker_confirmButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/confirm" />
+            android:text="@string/confirm"
+            android:background="@drawable/selector_dark_green_button"/>
     </LinearLayout>
 
 

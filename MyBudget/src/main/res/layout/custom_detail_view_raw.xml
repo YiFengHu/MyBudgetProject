@@ -12,7 +12,7 @@ android:orientation="horizontal">
     android:padding="@dimen/detail_view_title_padding"
     android:text="@string/detail_view_date" />
 
-<com.dreamer.mybudget.ui.activity.custom.TypeEditText
+<com.dreamer.mybudget.ui.custom.TypeEditText
     android:id="@+id/detailRawView_valueEditText"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

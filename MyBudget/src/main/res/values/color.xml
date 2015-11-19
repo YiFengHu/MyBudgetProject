@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="cream_yellow">#FFECB3</color>
+    <color name="light_cream_yellow">#FFF9F3</color>
+    <color name="light_cream_green">#ff80bbc4</color>
+
     <!-- Detail Layout -->
-    <color name="detail_layout_highlight_yellow">#FFECB3</color>
+    <color name="detail_layout_highlight_yellow">@color/cream_yellow</color>
+
 </resources>

@@ -18,8 +18,8 @@ import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DetailContent;
-import com.dreamer.mybudget.ui.activity.custom.DetailLayout;
-import com.dreamer.mybudget.ui.activity.custom.TypeEditText;
+import com.dreamer.mybudget.ui.custom.DetailLayout;
+import com.dreamer.mybudget.ui.custom.TypeEditText;
 import com.dreamer.mybudget.ui.adapter.AddDetailOptionAdapter;
 import com.dreamer.mybudget.ui.adapter.itemData.DetailOptionItem;
 import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
@@ -233,32 +233,6 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private void clearDetailLayoutValues(){
         detailLayout.clearOptionValues();
     }
-
-//    @Override
-//    public void onTypeItemClick() {
-//        resetOption(DetailContent.Type);
-//    }
-//
-//    @Override
-//    public void onDateItemClick() {
-//        resetOption(DetailContent.Date);
-//    }
-//
-//    @Override
-//    public void onPriceItemClick() {
-//        resetOption(DetailContent.Price);
-//    }
-//
-//    @Override
-//    public void onCategoryItemClick() {
-//        resetOption(DetailContent.Category);
-//    }
-//
-//    @Override
-//    public void onNoteItemClick() {
-//        resetOption(DetailContent.Note);
-//    }
-
 
     @Override
     public void onItemClick(DetailLayout.ContentViewType type) {

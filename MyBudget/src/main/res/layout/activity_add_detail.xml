@@ -15,7 +15,7 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         android:elevation="@dimen/elevation"/>
 
-    <com.dreamer.mybudget.ui.activity.custom.DetailLayout
+    <com.dreamer.mybudget.ui.custom.DetailLayout
         android:id="@+id/addDetail_detailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,8 +42,7 @@
             android:layout_height="wrap_content"
             android:text="@string/add_detail_submit"
             android:layout_centerInParent="true"
-            android:background="@drawable/selector_white_button"
-            />
+            android:background="@drawable/selector_white_button"/>
 
         </RelativeLayout>
 </LinearLayout>

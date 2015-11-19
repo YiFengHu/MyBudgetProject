@@ -15,7 +15,7 @@ import com.dreamer.mybudget.R;
 /**
  * Created by Roder Hu on 15/8/26.
  */
-public class DateRangePickerFragment extends DialogFragment implements View.OnClickListener{
+public class  DateRangePickerFragment extends DialogFragment implements View.OnClickListener{
 
     private OnDateRangeSelectedListener onDateRangeSelectedListener;
 

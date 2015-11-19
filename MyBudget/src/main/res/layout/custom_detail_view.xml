@@ -18,7 +18,7 @@
             android:padding="@dimen/detail_view_title_padding"
             android:text="@string/detail_view_type_title" />
 
-        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        <com.dreamer.mybudget.ui.custom.TypeEditText
             android:id="@+id/detailView_typeContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:padding="@dimen/detail_view_title_padding"
             android:text="@string/detail_view_date" />
 
-        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        <com.dreamer.mybudget.ui.custom.TypeEditText
             android:id="@+id/detailView_dateContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:padding="@dimen/detail_view_title_padding"
             android:text="@string/detail_view_price" />
 
-        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        <com.dreamer.mybudget.ui.custom.TypeEditText
             android:id="@+id/detailView_priceContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             android:text="@string/detail_view_category" />
 
 
-        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        <com.dreamer.mybudget.ui.custom.TypeEditText
             android:id="@+id/detailView_categoryContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
             android:padding="@dimen/detail_view_title_padding"
             android:text="@string/detail_view_note" />
 
-        <com.dreamer.mybudget.ui.activity.custom.TypeEditText
+        <com.dreamer.mybudget.ui.custom.TypeEditText
             android:id="@+id/detailView_noteContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

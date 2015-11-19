@@ -2,19 +2,19 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape>
-            <solid android:color="@color/light_cream_yellow"/>
+            <solid android:color="@color/light_cream_green" />
             <corners android:radius="3dp" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/light_cream_yellow"/>
+            <solid android:color="@color/light_cream_green" />
             <corners android:radius="3dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@android:color/white"/>
+            <solid android:color="@color/accent_material_light" />
             <corners android:radius="3dp" />
         </shape>
     </item>
