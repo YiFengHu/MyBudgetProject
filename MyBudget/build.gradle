@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.dreamer.mybudget"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -46,4 +46,7 @@ dependencies {
     //lListViewAnimations
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0'
+
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+
 }
