@@ -61,7 +61,7 @@ public abstract class CircularRevealActivity extends BaseActivity implements Vie
     @Override
     protected void onResume() {
         super.onResume();
-        mFAB.animate().rotation(45f).setDuration(500).start();
+        mFAB.animate().rotation((180f+45f)).setDuration(500).start();
 
         new Thread(new Runnable() {
             @Override
