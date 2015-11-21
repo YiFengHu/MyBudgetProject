@@ -17,9 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.AddDetailActivity" />
-        <activity
-            android:name=".ui.layout.SingleChildActivity"
+        <activity android:name=".ui.activity.AddDetailActivity"
             android:theme="@style/TransparentTheme"/>
 
     </application>

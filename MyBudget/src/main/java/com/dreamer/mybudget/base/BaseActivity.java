@@ -10,12 +10,14 @@ import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 /**
  * Created by Roder Hu on 15/6/6.
  */
-public class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        slideInTransition();
+        if(enableSlideInOnCreate()) {
+            slideInTransition();
+        }
     }
 
     protected void slideInTransition() {
@@ -27,4 +29,6 @@ public class BaseActivity extends AppCompatActivity{
         DateRangePickerFragment dateRangePickerFragment = DateRangePickerFragment.newInstance(callback, false);
         dateRangePickerFragment.show(getSupportFragmentManager(), null);
     }
+
+    protected abstract boolean enableSlideInOnCreate();
 }

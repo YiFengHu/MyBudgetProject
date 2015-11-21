@@ -1,22 +1,27 @@
-package com.dreamer.mybudget.ui.layout;
+package com.dreamer.mybudget.base;
 
 import android.animation.Animator;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
+import android.widget.LinearLayout;
 
 import com.dreamer.mybudget.R;
+import com.dreamer.mybudget.ui.layout.RevealLayout;
 
 
-public class SingleChildActivity extends AppCompatActivity implements View.OnClickListener{
+public abstract class CircularRevealActivity extends BaseActivity implements View.OnClickListener{
 
-    private static final String TAG = SingleChildActivity.class.getSimpleName();
+    private static final String TAG = CircularRevealActivity.class.getSimpleName();
 
+    private View mRootView = null;
+    protected LinearLayout mContainerView = null;
     private FloatingActionButton mFAB = null;
     private RevealLayout mRevealLayout;
     private Runnable revealRunnable;
@@ -24,16 +29,33 @@ public class SingleChildActivity extends AppCompatActivity implements View.OnCli
     private int revealX;
     private int revealY;
 
+    protected abstract View getContentView();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setTheme(R.style.TransparentTheme);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single);
+        mRootView = LayoutInflater.from(this).inflate(R.layout.activity_single, null);
+        setContentView(mRootView);
 
+        mContainerView = (LinearLayout)findViewById(R.id.circular_container);
         mFAB = (FloatingActionButton) findViewById(R.id.single_fab);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mFAB.setElevation(0f);
+        }
+
         mFAB.setOnClickListener(this);
 
         mRevealLayout = (RevealLayout) findViewById(R.id.reveal_layout);
         mRevealLayout.setContentShown(false);
+
+        mContainerView.addView(getContentView());
     }
 
     @Override
@@ -77,32 +99,36 @@ public class SingleChildActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.single_fab:
-                mRevealLayout.hide(revealX, revealY);
 
-                mFAB.animate().rotation(0f).setDuration(400).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        finish();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                }).start();
-
+                finishActivity();
                 break;
         }
+    }
+
+    protected void finishActivity(){
+        mRevealLayout.hide(revealX, revealY);
+
+        mFAB.animate().rotation(0f).setDuration(400).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                finish();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).start();
     }
 
     private Runnable getRevealRunnable(){

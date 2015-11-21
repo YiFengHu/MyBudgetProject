@@ -50,6 +50,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 .replace(R.id.main_container, new MainFragment()).commit();
     }
 
+    @Override
+    protected boolean enableSlideInOnCreate() {
+        return true;
+    }
+
     private void insertDetail() {
         DBManager.getInstance().getDetailDBHandler().deleteAll();
 

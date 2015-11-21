@@ -10,7 +10,8 @@ android:orientation="horizontal">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/detail_view_title_padding"
-    android:text="@string/detail_view_date" />
+    android:text="@string/detail_view_date"
+    android:textColor="@android:color/darker_gray"/>
 
 <com.dreamer.mybudget.ui.custom.TypeEditText
     android:id="@+id/detailRawView_valueEditText"
@@ -19,5 +20,6 @@ android:orientation="horizontal">
     android:background="@null"
     android:maxEms="10"
     android:padding="@dimen/detail_view_title_padding"
-    android:textCursorDrawable="@null" />
+    android:textCursorDrawable="@null"
+    android:textColor="@android:color/black"/>
 </LinearLayout>

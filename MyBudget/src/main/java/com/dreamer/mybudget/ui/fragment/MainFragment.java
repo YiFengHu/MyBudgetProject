@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 
 import com.dreamer.mybudget.R;
 import com.dreamer.mybudget.base.BaseFragment;
+import com.dreamer.mybudget.base.CircularRevealActivity;
 import com.dreamer.mybudget.ui.activity.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
-import com.dreamer.mybudget.ui.layout.SingleChildActivity;
 
 /**
  * Created by Roder Hu on 15/8/26.
@@ -61,16 +61,8 @@ public class MainFragment extends BaseFragment implements View.OnClickListener, 
         switch (v.getId()){
             case R.id.mainFragment_addButton:
 
-//                Intent intent = new Intent();
-//                intent.setClass(getActivity(), AddDetailActivity.class);
-//                startActivity(intent);
-
-                int x = (int)addButton.getPivotX();
-                int y = (int)addButton.getPivotY();
-
-                Log.d("reveal", "put x: "+x+"  y:"+y);
                 Intent intent = new Intent();
-                intent.setClass(getActivity(), SingleChildActivity.class);
+                intent.setClass(getActivity(), AddDetailActivity.class);
                 startActivity(intent);
                 break;
         }

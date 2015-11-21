@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -15,6 +17,7 @@ import com.dreamer.mybudget.Category;
 import com.dreamer.mybudget.Detail;
 import com.dreamer.mybudget.R;
 import com.dreamer.mybudget.base.BaseActivity;
+import com.dreamer.mybudget.base.CircularRevealActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DetailContent;
@@ -33,7 +36,7 @@ import java.util.Map;
 /**
  * Created by Roder Hu on 15/8/26.
  */
-public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
+public class AddDetailActivity extends CircularRevealActivity implements DetailLayout.OnDetailItemClick, AdapterView.OnItemClickListener{
 
     private static final String TAG = AddDetailActivity.class.getSimpleName();
     public static final String DETAIL_TYPE_KEY = "DETAIL_TYPE_KEY";
@@ -52,8 +55,8 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private List<DetailOptionItem> dateOptionsList = null;
     private String detailType = "";
 
-
-    private Toolbar toolbar = null;
+    private View rootView;
+//    private Toolbar toolbar = null;
     private DetailLayout detailLayout = null;
 
     private GridView gridView = null;
@@ -62,12 +65,10 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private CategoryType currentCategoryType = CategoryType.Expense;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_detail);
-
+    protected View getContentView() {
+        rootView = LayoutInflater.from(this).inflate(R.layout.activity_add_detail, null);
         initLayout();
-        initToolBar();
+//        initToolBar();
 
         initOptionDatas();
 
@@ -78,7 +79,19 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         }
 
         detailLayout.setOnDetailItemClick(this);
+        return rootView;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         nextOption(true);
+    }
+
+    @Override
+    protected boolean enableSlideInOnCreate() {
+        return false;
     }
 
     private void initOptionDatas() {
@@ -105,9 +118,9 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
     private void initLayout(){
         Log.d(TAG, "initLayout");
 
-        detailLayout = (DetailLayout)findViewById(R.id.addDetail_detailLayout);
-        gridView = (GridView)findViewById(R.id.addDetail_optionGridView);
-        submitButton =  (Button) findViewById(R.id.addDetail_submitButton);
+        detailLayout = (DetailLayout)rootView.findViewById(R.id.addDetail_detailLayout);
+        gridView = (GridView)rootView.findViewById(R.id.addDetail_optionGridView);
+        submitButton =  (Button)rootView.findViewById(R.id.addDetail_submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,24 +129,15 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
         });
     }
 
-    private void initToolBar() {
-        toolbar = (Toolbar)findViewById(R.id.addDetail_toolbar);
-        if(Build.VERSION.SDK_INT>=21) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
-        }
-
-        toolbar.setTitle(getString(R.string.add_detail_title));
-        setSupportActionBar(toolbar);
-
-        //must place after setSupportActionBar(toolbar) method. - Roder
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
+//    private void initToolBar() {
+//        toolbar = (Toolbar)rootView.findViewById(R.id.addDetail_toolbar);
+//        if(Build.VERSION.SDK_INT>=21) {
+//            toolbar.setElevation(getResources().getDimension(R.dimen.elevation));
+//        }
+//
+//        toolbar.setTitle(getString(R.string.add_detail_title));
+//        setSupportActionBar(toolbar);
+//    }
 
     private void resetOption(DetailContent content){
         mCurrentDetailContent = content;
@@ -222,7 +226,7 @@ public class AddDetailActivity extends BaseActivity implements DetailLayout.OnDe
 
 //            clearDetailLayoutValues();
 
-            finish();
+            finishActivity();
         }else{
             DetailLayout.ContentViewType invalidType = detailLayout.getInvalidContentType();
             resetOption(getDetailContent(invalidType));
