@@ -13,16 +13,27 @@
         android:text="Main"
         android:textSize="@dimen/default_text_size"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/mainFragment_addButton"
-        style="@style/CustomFAB"
+    <com.dreamer.mybudget.ui.widget.FloatingActionMenu
+        android:id="@+id/mainFragment_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:clickable="true"
-        android:src="@drawable/ic_add_white_48dp"
+        android:layout_alignParentEnd="true"
         android:layout_marginRight="@dimen/fab_margin_20dp"
+        android:layout_marginEnd="@dimen/fab_margin_20dp"
         android:layout_marginBottom="@dimen/fab_margin_20dp"/>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/mainFragment_addButton"-->
+        <!--style="@style/CustomFAB"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:clickable="true"-->
+        <!--android:src="@drawable/ic_add_white_48dp"-->
+        <!--android:layout_marginRight="@dimen/fab_margin_20dp"-->
+        <!--android:layout_marginBottom="@dimen/fab_margin_20dp"/>-->
 
 </RelativeLayout>

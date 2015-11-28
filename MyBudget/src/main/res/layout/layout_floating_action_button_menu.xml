@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonMenu_addDetailButton"
+        style="@style/CustomFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/floatingActionButtonMenu_addBudgetButton"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_48dp"
+        android:layout_marginBottom="@dimen/fab_menu_margin"
+        android:layout_centerHorizontal="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonMenu_addBudgetButton"
+        style="@style/CustomFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/floatingActionButtonMenu_addAlarmButton"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_48dp"
+        android:layout_marginBottom="@dimen/fab_menu_margin"
+        android:layout_centerHorizontal="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonMenu_addAlarmButton"
+        style="@style/CustomFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/floatingActionButtonMenu_toggleButton"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_48dp"
+        android:layout_marginBottom="@dimen/fab_menu_margin"
+        android:layout_centerHorizontal="true"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonMenu_toggleButton"
+        style="@style/CustomFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_48dp"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

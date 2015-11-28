@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 
 import com.dreamer.mybudget.R;
@@ -61,7 +62,8 @@ public abstract class CircularRevealActivity extends BaseActivity implements Vie
     @Override
     protected void onResume() {
         super.onResume();
-        mFAB.animate().rotation((180f+45f)).setDuration(500).start();
+        mFAB.animate().setInterpolator(new OvershootInterpolator(3.0F))
+                .rotation((180f + 45f)).setDuration(500).start();
 
         new Thread(new Runnable() {
             @Override

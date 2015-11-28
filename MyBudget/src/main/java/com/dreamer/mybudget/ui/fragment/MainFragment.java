@@ -18,14 +18,16 @@ import com.dreamer.mybudget.base.BaseFragment;
 import com.dreamer.mybudget.base.CircularRevealActivity;
 import com.dreamer.mybudget.ui.activity.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
+import com.dreamer.mybudget.ui.widget.FloatingActionMenu;
 
 /**
  * Created by Roder Hu on 15/8/26.
  */
-public class MainFragment extends BaseFragment implements View.OnClickListener, Toolbar.OnMenuItemClickListener{
+public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener, FloatingActionMenu.OnActionButtonClickListener{
 
     private View mRootView = null;
-    private FloatingActionButton addButton = null;
+//    private FloatingActionButton addButton = null;
+    private FloatingActionMenu menu = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,9 +39,10 @@ public class MainFragment extends BaseFragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);;
-        addButton = (FloatingActionButton)mRootView.findViewById(R.id.mainFragment_addButton);
-        addButton.setOnClickListener(this);
-
+//        addButton = (FloatingActionButton)mRootView.findViewById(R.id.mainFragment_addButton);
+//        addButton.setOnClickListener(this);
+        menu = (FloatingActionMenu)mRootView.findViewById(R.id.mainFragment_menu);
+        menu.setActionClickListener(this);
         return mRootView;
     }
 
@@ -57,18 +60,6 @@ public class MainFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.mainFragment_addButton:
-
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), AddDetailActivity.class);
-                startActivity(intent);
-                break;
-        }
-    }
-
-    @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()){
             case R.id.main_details:
@@ -76,5 +67,22 @@ public class MainFragment extends BaseFragment implements View.OnClickListener, 
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onActionClick(int actionId) {
+        switch (actionId){
+            case FloatingActionMenu.ACTION_ADD_DETAIL:
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), AddDetailActivity.class);
+                startActivity(intent);
+                break;
+
+            case FloatingActionMenu.ACTION_ADD_BUDGET:
+                break;
+
+            case FloatingActionMenu.ACTION_ADD_ALARM:
+                break;
+        }
     }
 }

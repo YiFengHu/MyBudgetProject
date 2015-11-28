@@ -29,6 +29,8 @@
     <dimen name="carddemo_extras_gplay_grid_columnwidth_card">125dp</dimen>
 
     <!-- FAB -->
+    <dimen name="fab_menu_margin">10dp</dimen>
+    <dimen name="fab_margin_10dp">10dp</dimen>
     <dimen name="fab_margin_20dp">20dp</dimen>
 
     <!-- Add Detail -->
