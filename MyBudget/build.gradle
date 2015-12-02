@@ -43,4 +43,8 @@ dependencies {
     //lListViewAnimations
     compile 'com.nhaarman.listviewanimations:lib-core:3.1.0'
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0'
+
+    //DatePciker, TimePicker
+    compile 'com.wdullaer:materialdatetimepicker:2.0.2'
+
 }

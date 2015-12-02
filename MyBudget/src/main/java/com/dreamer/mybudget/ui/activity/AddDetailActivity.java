@@ -27,6 +27,7 @@ import com.dreamer.mybudget.ui.adapter.AddDetailOptionAdapter;
 import com.dreamer.mybudget.ui.adapter.itemData.DetailOptionItem;
 import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,11 +171,11 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
 
         }else if(DetailContent.Date.equals(detailContent)){
 
-            transactionDateRangePickerFragment(new DateRangePickerFragment.OnDateRangeSelectedListener() {
+            transactionDateRangePickerFragment(new DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onDateRangeSelected(int day, int month, int year) {
+                public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                     StringBuilder date = new StringBuilder();
-                    date.append(year).append("-").append(month).append("-").append(day);
+                    date.append(year).append("-").append(monthOfYear).append("-").append(dayOfMonth);
                     detailLayout.typeContent(DetailLayout.ContentViewType.date, date.toString());
 
                     nextOption(false);
