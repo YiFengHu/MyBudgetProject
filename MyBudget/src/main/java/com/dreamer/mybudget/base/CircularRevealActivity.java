@@ -4,11 +4,11 @@ import android.animation.Animator;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
@@ -41,7 +41,7 @@ public abstract class CircularRevealActivity extends BaseActivity implements Vie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRootView = LayoutInflater.from(this).inflate(R.layout.activity_single, null);
+        mRootView = LayoutInflater.from(this).inflate(R.layout.activity_circular_reveal, null);
         setContentView(mRootView);
 
         mContainerView = (LinearLayout)findViewById(R.id.circular_container);
@@ -108,6 +108,7 @@ public abstract class CircularRevealActivity extends BaseActivity implements Vie
     }
 
     protected void finishActivity(){
+        setTheme(R.style.TransparentTheme);
         mRevealLayout.hide(revealX, revealY);
 
         mFAB.animate().rotation(0f).setDuration(400).setListener(new Animator.AnimatorListener() {
@@ -139,8 +140,10 @@ public abstract class CircularRevealActivity extends BaseActivity implements Vie
                 @Override
                 public void run() {
 
-                    revealX = mRevealLayout.getWidth() - mFAB.getPaddingRight() - mFAB.getWidth()/2;
-                    revealY = mRevealLayout.getHeight() - mFAB.getPaddingBottom() - mFAB.getHeight()/2;
+                    ViewGroup.MarginLayoutParams margin = new ViewGroup.MarginLayoutParams(mFAB.getLayoutParams());
+
+                    revealX = mRevealLayout.getWidth() - margin.rightMargin - mFAB.getWidth()/2;
+                    revealY = mRevealLayout.getHeight() - margin.bottomMargin - mFAB.getHeight()/2;
 
                     if (!mRevealLayout.isContentShown()) {
                         mRevealLayout.show(revealX, revealY, new Animation.AnimationListener() {

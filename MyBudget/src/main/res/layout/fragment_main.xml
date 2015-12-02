@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/main_toolbar"
         android:layout_marginTop="20dp"
         android:layout_centerInParent="true"
         android:text="Main"
@@ -15,14 +13,9 @@
 
     <com.dreamer.mybudget.ui.widget.FloatingActionMenu
         android:id="@+id/mainFragment_menu"
+        style="@style/MainFragmentFABLayoutStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="@dimen/fab_margin_20dp"
-        android:layout_marginEnd="@dimen/fab_margin_20dp"
-        android:layout_marginBottom="@dimen/fab_margin_20dp"/>
+        android:layout_height="wrap_content"/>
 
     <!--<android.support.design.widget.FloatingActionButton-->
         <!--android:id="@+id/mainFragment_addButton"-->

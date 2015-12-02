@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -25,7 +26,10 @@ import java.util.List;
  * Created by Roder Hu on 2015/11/26.
  */
 public class FloatingActionMenu extends FrameLayout implements View.OnClickListener {
+    private static final String TAG = FloatingActionMenu.class.getSimpleName();
 
+    private static final int MENU_COUNT = 3;
+    
     public static final int ACTION_ADD_DETAIL = 1;
     public static final int ACTION_ADD_BUDGET = 2;
     public static final int ACTION_ADD_ALARM = 3;
@@ -45,6 +49,8 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
     private List<FloatingActionButton> menuButtons = new ArrayList<>(3);
 
     private boolean mIsExpand = false;
+
+    private int animationCounter = 0;
 
     public FloatingActionMenu(Context context) {
         super(context);
@@ -88,6 +94,9 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
     }
 
     public void expand() {
+        //TODO Reset animatin counter
+        animationCounter = 0;
+
         mIsExpand = true;
         mToggleButton.setEnabled(false);
         mToggleButton.animate()
@@ -116,8 +125,8 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
                     }
                 }).start();
 
-        for (int i = 0; i < menuButtons.size(); i++) {
-            Animation anim = geFadeInAnimation(i, menuButtons.get(i));
+        for (int i = 0; i < MENU_COUNT; i++) {
+            Animation anim = geFadeInAnimation(i);
             menuButtons.get(i).startAnimation(anim);
         }
     }
@@ -125,6 +134,10 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
     public void collapse() {
         mIsExpand = false;
         mToggleButton.setEnabled(false);
+        for (int i = 0; i < MENU_COUNT; i++) {
+            menuButtons.get(i).setEnabled(false);
+        }
+
         mToggleButton.animate()
                 .setInterpolator(new OvershootInterpolator(4.0F))
                 .rotation(0f)
@@ -150,14 +163,57 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
 
                     }
                 }).start();
-        for (int i = 0; i < menuButtons.size(); i++) {
-            Animation anim = geFadeOutAnimation(i, menuButtons.get(i));
+        for (int i = 0; i < MENU_COUNT; i++) {
+            Animation anim = getSimpleFadeOutAnimation(i);
             menuButtons.get(i).startAnimation(anim);
 
         }
     }
 
-    private Animation geFadeInAnimation(final int menuIndex, final FloatingActionButton button) {
+    public void collapse(Runnable endAction) {
+        //TODO Reset animation counter
+        animationCounter = 0;
+
+        mIsExpand = false;
+        mToggleButton.setEnabled(false);
+        for (int i = 0; i < MENU_COUNT; i++) {
+            menuButtons.get(i).setEnabled(false);
+        }
+
+        mToggleButton.animate()
+                .setInterpolator(new OvershootInterpolator(4.0F))
+                .rotation(0f)
+                .setDuration(200)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mToggleButton.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).start();
+
+        for (int i = 0; i < MENU_COUNT; i++) {
+            Animation anim = getFadeOutAnimationWithEndAction(i, endAction);
+            menuButtons.get(i).startAnimation(anim);
+        }
+
+    }
+
+    private Animation geFadeInAnimation(final int menuIndex) {
         AnimationSet anim = new AnimationSet(true);
         anim.setInterpolator(new OvershootInterpolator(2.5F));
         anim.setDuration(250);
@@ -173,7 +229,14 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                button.setVisibility(View.VISIBLE);
+                menuButtons.get(menuIndex).setVisibility(View.VISIBLE);
+                animationCounter++;
+
+                if(animationCounter == MENU_COUNT){
+                    for (int i = 0; i < MENU_COUNT; i++) {
+                        menuButtons.get(i).setEnabled(true);
+                    }
+                }
             }
 
             @Override
@@ -185,7 +248,59 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
         return anim;
     }
 
-    private Animation geFadeOutAnimation(final int menuIndex, final FloatingActionButton button) {
+    private Animation getSimpleFadeOutAnimation(final int menuIndex){
+        return getFadeOutAnimation(menuIndex, new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Log.d(TAG, "onAnimationEnd() called with: " + "animation = [" + animation + "]");
+
+                menuButtons.get(menuIndex).setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private Animation getFadeOutAnimationWithEndAction(final int menuIndex, final Runnable endAction){
+        return getFadeOutAnimation(menuIndex, new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Log.d(TAG, "WithEndAction onAnimationEnd() called with: " + "animation = [" + animation + "]");
+
+                menuButtons.get(menuIndex).setVisibility(View.INVISIBLE);
+                animationCounter++;
+                Log.d(TAG, "WithEndAction onAnimationEnd() called with: " + "animationCounter = [" + animationCounter + "]");
+
+                if(animationCounter == MENU_COUNT){
+                    endAction.run();
+
+                    for (int i = 0; i < MENU_COUNT; i++) {
+                        menuButtons.get(i).setEnabled(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private Animation getFadeOutAnimation(final int menuIndex, Animation.AnimationListener listener) {
         AnimationSet anim = new AnimationSet(true);
         anim.setInterpolator(new DecelerateInterpolator());
         anim.setDuration(200);
@@ -194,22 +309,7 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
         TranslateAnimation translate = new TranslateAnimation(0, 0, 0, (float) ((4 - menuIndex) * 100));
         anim.addAnimation(alpha);
         anim.addAnimation(translate);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                button.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        anim.setAnimationListener(listener);
 
         return anim;
     }
@@ -228,19 +328,22 @@ public class FloatingActionMenu extends FrameLayout implements View.OnClickListe
 
             default:
 
-                collapse();
-
                 final int actionId = (int)view.getTag();
-
-                new Handler().postDelayed(new Runnable() {
+                collapse(new Runnable() {
                     @Override
                     public void run() {
-                        if(mActionClickListener!=null){
-                            mActionClickListener.onActionClick(actionId);
-                        }
-                    }
-                }, 300);
+                        Activity activity = (Activity)mContext;
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mActionClickListener != null) {
+                                    mActionClickListener.onActionClick(actionId);
+                                }
+                            }
+                        });
 
+                    }
+                });
 
                 break;
         }

@@ -19,4 +19,37 @@
                 <item name="rippleColor">?attr/colorAccent</item>
         </style>
 
+        <style name="MainFABLayoutStyle">
+                <item name="android:layout_alignParentBottom">true</item>
+                <item name="android:layout_alignParentEnd">true</item>
+                <item name="android:layout_marginEnd">@dimen/fab_margin_20dp</item>
+                <item name="android:layout_marginBottom">@dimen/fab_margin_20dp</item>
+        </style>
+
+        <style name="CustomFAB" parent="BaseFAB">
+                <item name="backgroundTint">?attr/colorPrimaryDark</item>
+                <item name="rippleColor">?attr/colorAccent</item>
+                <item name="android:layout_marginLeft">@dimen/fab_margin_10dp</item>
+                <item name="android:layout_marginRight">@dimen/fab_margin_10dp</item>
+        </style>
+
+        <style name="FABMenuItemButton" parent="BaseFAB">
+                <item name="fabSize">normal</item>
+                <item name="android:layout_marginStart">@dimen/fab_margin_10dp</item>
+                <item name="android:layout_marginEnd">@dimen/fab_margin_10dp</item>
+                <item name="android:layout_marginBottom">@dimen/fab_margin_20dp</item>
+        </style>
+
+        <style name="FloatingActionButtonViewStyle">
+                <item name="android:paddingBottom">@dimen/fab_margin_10dp</item>
+        </style>
+
+        <style name="CircularRevealFABLayoutStyle">
+                <item name="android:layout_alignParentBottom">true</item>
+                <item name="android:layout_alignParentRight">true</item>
+                <item name="android:layout_marginRight">@dimen/fab_margin_10dp</item>
+                <item name="android:layout_marginBottom">@dimen/fab_margin_10dp</item>
+                <item name="android:paddingBottom">@dimen/fab_margin_10dp</item>
+        </style>
+
 </resources>

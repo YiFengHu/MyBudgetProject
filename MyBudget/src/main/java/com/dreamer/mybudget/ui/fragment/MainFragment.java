@@ -1,6 +1,8 @@
 package com.dreamer.mybudget.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -56,7 +58,6 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).setMainToolBar(this);
-
     }
 
     @Override
@@ -76,6 +77,9 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), AddDetailActivity.class);
                 startActivity(intent);
+
+                //Disable activity transaction animation
+                getActivity().overridePendingTransition(0, 0);
                 break;
 
             case FloatingActionMenu.ACTION_ADD_BUDGET:
