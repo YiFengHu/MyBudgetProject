@@ -173,6 +173,9 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
             transactionDateRangePickerFragment(new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                    //Month starts with 0 (January is 0), so must add 1
+                    monthOfYear += 1;
+
                     StringBuilder date = new StringBuilder();
                     date.append(year).append("-").append(monthOfYear).append("-").append(dayOfMonth);
                     detailLayout.typeContent(DetailLayout.ContentViewType.date, date.toString());
