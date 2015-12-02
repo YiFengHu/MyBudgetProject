@@ -25,7 +25,6 @@ import com.dreamer.mybudget.ui.custom.DetailLayout;
 import com.dreamer.mybudget.ui.custom.TypeEditText;
 import com.dreamer.mybudget.ui.adapter.AddDetailOptionAdapter;
 import com.dreamer.mybudget.ui.adapter.itemData.DetailOptionItem;
-import com.dreamer.mybudget.ui.widget.DateRangePickerFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
