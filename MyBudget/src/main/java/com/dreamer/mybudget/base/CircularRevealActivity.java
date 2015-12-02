@@ -142,8 +142,8 @@ public abstract class CircularRevealActivity extends BaseActivity implements Vie
 
                     ViewGroup.MarginLayoutParams margin = new ViewGroup.MarginLayoutParams(mFAB.getLayoutParams());
 
-                    revealX = mRevealLayout.getWidth() - margin.rightMargin - mFAB.getWidth()/2;
-                    revealY = mRevealLayout.getHeight() - margin.bottomMargin - mFAB.getHeight()/2;
+                    revealX = mRevealLayout.getWidth() - margin.rightMargin - mFAB.getPaddingRight() - (mFAB.getWidth()/2);
+                    revealY = mRevealLayout.getHeight() - margin.bottomMargin - mFAB.getPaddingBottom() - (mFAB.getHeight()/2);
 
                     if (!mRevealLayout.isContentShown()) {
                         mRevealLayout.show(revealX, revealY, new Animation.AnimationListener() {
