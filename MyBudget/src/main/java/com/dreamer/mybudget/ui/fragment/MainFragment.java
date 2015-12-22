@@ -221,7 +221,7 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
             LineSet incomeDataSet = new LineSet(incomeDateXScale, incomePriceYScale);
 
-            incomeDataSet.setColor(getResources().getColor(R.color.chat_line_light_blue))
+            incomeDataSet.setColor(getResources().getColor(R.color.chat_line_light_pink))
 //                    .setDotsRadius(10f)
 //                    .setDotsStrokeThickness(Tools.fromDpToPx(2))
 //                    .setDotsStrokeColor(getResources().getColor(android.R.color.holo_blue_light))
