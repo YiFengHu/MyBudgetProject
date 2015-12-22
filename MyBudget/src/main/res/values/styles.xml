@@ -85,4 +85,12 @@
         <item name="rippleColor">?attr/colorAccent</item>
     </style>
 
+    <style name="MainChartEntryTitleText">
+        <item name="android:textColor">@color/accent_material_light</item>
+    </style>
+
+    <style name="MainChartEntryValueText">
+        <item name="android:textColor">@color/lighter_gray_d</item>
+    </style>
+
 </resources>

@@ -47,6 +47,7 @@ public class DBAdapter {
                 dailyDetail = monthDetails.get(date - 1);
 
                 dailyDetail.setDetailPrice(dailyDetail.getDetailPrice() + detail.getPrice());
+                dailyDetail.setTimeStamp(detail.getTime());
             }
         }
 

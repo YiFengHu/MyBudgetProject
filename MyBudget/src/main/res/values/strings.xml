@@ -6,6 +6,12 @@
     <string name="main_menu_insert_test_data">Insert test data</string>
     <string name="main_chart_title_monthly_detail">Expend / Income of this month ...</string>
 
+    <!-- Main Chart Entry -->
+    <string name="main_chart_entry_date_title">Date</string>
+    <string name="main_chart_entry_expense_title">Expense</string>
+    <string name="main_chart_entry_income_title">Income</string>
+    <string name="main_chart_entry_more_button">More...</string>
+
 
     <!-- Detail Data Title -->
     <string name="detail_view_type_title">Type:</string>

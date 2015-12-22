@@ -17,9 +17,14 @@
     <dimen name="detail_view_title_padding">5dp</dimen>
     <dimen name="detail_view_cardview_radius">10dp</dimen>
 
+    <!-- Divider -->
+    <dimen name="main_chart_entry_detail_divider">2dp</dimen>
+
     <!-- padding -->
     <dimen name="activity_padding_5dp">5dp</dimen>
     <dimen name="activity_padding_10dp">10dp</dimen>
+    <dimen name="activity_padding_20dp">20dp</dimen>
+    <dimen name="activity_padding_40dp">40dp</dimen>
 
     <!-- margin -->
     <dimen name="activity_margin_10dp">10dp</dimen>

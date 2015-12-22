@@ -12,6 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.db.chart.Tools;
 import com.db.chart.listener.OnEntryClickListener;
@@ -29,8 +32,8 @@ import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.ui.activity.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
 import com.dreamer.mybudget.ui.chart.DailyDetail;
-import com.dreamer.mybudget.ui.widget.ChartPointPopupWindow;
 import com.dreamer.mybudget.ui.widget.FloatingActionMenu;
+import com.dreamer.mybudget.util.DateUtil;
 
 import java.util.Calendar;
 import java.util.List;
@@ -38,16 +41,28 @@ import java.util.List;
 /**
  * Created by Roder Hu on 15/8/26.
  */
-public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener, FloatingActionMenu.OnActionButtonClickListener{
+public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener,
+        FloatingActionMenu.OnActionButtonClickListener, OnEntryClickListener {
 
     private static final String TAG = MainFragment.class.getSimpleName();
 
+    private List<DailyDetail> mExpenseDetails;
+    private List<DailyDetail> mIncomeDetails;
+    private String[] currentExpenseDateXScale;
+    private float[] currentExpensePriceYScale;
+    private String[] currentIncomeDateXScale;
+    private float[] currentIncomePriceYScale;
+
     private View mRootView = null;
-//    private FloatingActionButton addButton = null;
-    private FloatingActionMenu menu = null;
+    private FloatingActionMenu fabMenu = null;
     private LineChartView lineChartView = null;
 
-    private ChartPointPopupWindow popupWindow;
+    private TextView entryDateTextView;
+    private TextView entryExpenseTextView;
+    private TextView entryIncomeTextView;
+    private TextView entryPlusOrMinusTextView;
+    private TextView entryBalanceTextView;
+    private Button entryDetailButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,18 +73,27 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mRootView = inflater.inflate(R.layout.fragment_main, container, false);;
-//        addButton = (FloatingActionButton)mRootView.findViewById(R.id.mainFragment_addButton);
-//        addButton.setOnClickListener(this);
-        menu = (FloatingActionMenu)mRootView.findViewById(R.id.mainFragment_menu);
-        menu.setActionClickListener(this);
-
-        lineChartView = (LineChartView)mRootView.findViewById(R.id.mainFragment_lineChartView);
-        popupWindow = new ChartPointPopupWindow(getActivity(), mRootView);
+        mRootView = inflater.inflate(R.layout.fragment_main, container, false);
+        initLayout();
 
         requestData();
 
         return mRootView;
+    }
+
+    public void initLayout(){
+        fabMenu = (FloatingActionMenu)mRootView.findViewById(R.id.mainFragment_menu);
+        fabMenu.setActionClickListener(this);
+
+        lineChartView = (LineChartView)mRootView.findViewById(R.id.mainFragment_lineChartView);
+        lineChartView.setOnEntryClickListener(this);
+
+        entryDateTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_dateValue);
+        entryExpenseTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_expenseValue);
+        entryIncomeTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_incomeValue);
+        entryPlusOrMinusTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_plusOrMinus);
+        entryBalanceTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_balanceValue);
+        entryDetailButton = (Button)mRootView.findViewById(R.id.mainEntryDetail_moreButton);
     }
 
     @Override
@@ -159,23 +183,21 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
 
     private void requestData() {
-        DBManager dbManager = DBManager.getInstance();
-
         long dbStart = System.currentTimeMillis();
-        List<DailyDetail> expenseDetails = DBAdapter.getMonthlyDetails(CategoryType.Expense);
-        List<DailyDetail> incomeDetails = DBAdapter.getMonthlyDetails(CategoryType.Income);
+        mExpenseDetails = DBAdapter.getMonthlyDetails(CategoryType.Expense);
+        mIncomeDetails = DBAdapter.getMonthlyDetails(CategoryType.Income);
 
         long dbEnd = System.currentTimeMillis();
         Log.d(TAG, "requestData: DB load duration: "+(dbEnd - dbStart));
 
 
-        if(!expenseDetails.isEmpty() || !incomeDetails.isEmpty()) {
+        if(!mExpenseDetails.isEmpty() || !mIncomeDetails.isEmpty()) {
 
-            String[] expenseDateXScale = new String[expenseDetails.size()];
-            float[] expensePriceYScale = new float[expenseDetails.size()];
+            currentExpenseDateXScale = new String[mExpenseDetails.size()];
+            currentExpensePriceYScale = new float[mExpenseDetails.size()];
 
-            String[] incomeDateXScale = new String[expenseDetails.size()];
-            float[] incomePriceYScale = new float[expenseDetails.size()];
+            currentIncomeDateXScale = new String[mExpenseDetails.size()];
+            currentIncomePriceYScale = new float[mExpenseDetails.size()];
 
             DailyDetail dailyDetail = null;
 
@@ -184,24 +206,24 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
             int maxPrice = 0;
 
-            for (int i = 0; i < expenseDetails.size(); i++) {
-                dailyDetail = expenseDetails.get(i);
+            for (int i = 0; i < mExpenseDetails.size(); i++) {
+                dailyDetail = mExpenseDetails.get(i);
                 date = dailyDetail.getDate();
                 date = Integer.valueOf(date)%2==0?"" : date;
 
-                expenseDateXScale[i] = date;
-                expensePriceYScale[i] = dailyDetail.getDetailPrice();
+                currentExpenseDateXScale[i] = date;
+                currentExpensePriceYScale[i] = dailyDetail.getDetailPrice();
 
                 maxPrice = dailyDetail.getDetailPrice() > maxPrice? (int)dailyDetail.getDetailPrice(): maxPrice;
             }
 
-            for (int i = 0; i < expenseDetails.size(); i++) {
-                dailyDetail = incomeDetails.get(i);
+            for (int i = 0; i < mIncomeDetails.size(); i++) {
+                dailyDetail = mIncomeDetails.get(i);
                 date = dailyDetail.getDate();
                 date = Integer.valueOf(date)%2==0?"" : date;
 
-                incomeDateXScale[i] = date;
-                incomePriceYScale[i] = dailyDetail.getDetailPrice();
+                currentIncomeDateXScale[i] = date;
+                currentIncomePriceYScale[i] = dailyDetail.getDetailPrice();
 
                 maxPrice = dailyDetail.getDetailPrice() > maxPrice? (int)dailyDetail.getDetailPrice(): maxPrice;
 
@@ -210,22 +232,14 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
             Log.d(TAG, "requestData: Data set generate duration: " + (dataSetEnd - dataSetStart));
 
 
-            LineSet expenseDataSet = new LineSet(expenseDateXScale, expensePriceYScale);
+            LineSet expenseDataSet = new LineSet(currentExpenseDateXScale, currentExpensePriceYScale);
 
             expenseDataSet.setColor(getResources().getColor(R.color.chat_line_light_yellow))
-//                    .setDotsRadius(10f)
-//                    .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                    .setDotsStrokeColor(getResources().getColor(android.R.color.holo_blue_light))
-//                    .setDotsColor(getResources().getColor(android.R.color.white));
                     .setThickness(Tools.fromDpToPx(4));
 
-            LineSet incomeDataSet = new LineSet(incomeDateXScale, incomePriceYScale);
+            LineSet incomeDataSet = new LineSet(currentIncomeDateXScale, currentIncomePriceYScale);
 
             incomeDataSet.setColor(getResources().getColor(R.color.chat_line_light_pink))
-//                    .setDotsRadius(10f)
-//                    .setDotsStrokeThickness(Tools.fromDpToPx(2))
-//                    .setDotsStrokeColor(getResources().getColor(android.R.color.holo_blue_light))
-//                    .setDotsColor(getResources().getColor(android.R.color.white));
                     .setThickness(Tools.fromDpToPx(4));
 
             lineChartView.addData(expenseDataSet);
@@ -234,9 +248,6 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
             if(maxPrice%4 != 0){
                 maxPrice += (4-(maxPrice%4));
             }
-            Log.d(TAG, "max= " + maxPrice);
-
-            Log.d(TAG, "max/4= " + (maxPrice/4));
 
             if(maxPrice > 0) {
                 lineChartView.setAxisBorderValues(0, maxPrice, (maxPrice / 4));
@@ -250,33 +261,33 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
                     .setAxisThickness(Tools.fromDpToPx(3))
                     .setLabelsColor(getResources().getColor(android.R.color.white))
                     .setXAxis(true)
-                    .setYAxis(true)
-                    .setOnEntryClickListener(new OnEntryClickListener() {
-                        @Override
-                        public void onClick(int setIndex, int entryIndex, Rect rect) {
-                            popupWindow.show(rect);
-                        }
-                    });
-
-//            Tooltip tip = new Tooltip(getActivity(), R.layout.linechart_three_tooltip, R.id.value);
-//
-//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//
-//                tip.setEnterAnimation(PropertyValuesHolder.ofFloat(View.ALPHA, 1),
-//                        PropertyValuesHolder.ofFloat(View.SCALE_X, 1f),
-//                        PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f));
-//
-//                tip.setExitAnimation(PropertyValuesHolder.ofFloat(View.ALPHA,0),
-//                        PropertyValuesHolder.ofFloat(View.SCALE_X,0f),
-//                        PropertyValuesHolder.ofFloat(View.SCALE_Y,0f));
-//            }
-//
-//            lineChartView.setTooltips(tip);
+                    .setYAxis(true);
 
             Animation anim = new Animation();
             anim.setEasing(new QuadEase());
             lineChartView.show(anim);
         }
+    }
+
+    private void setEntryData(int entryIndex){
+        int expenseValue = (int)mExpenseDetails.get(entryIndex).getDetailPrice();
+        int incomeValue = (int)mIncomeDetails.get(entryIndex).getDetailPrice();
+
+        String expense = String.valueOf(expenseValue);
+        String income = String.valueOf(incomeValue);
+        String date = DateUtil.getYearMothDate(mExpenseDetails.get(entryIndex).getTimeStamp());
+        String balance = String.valueOf(Math.abs(expenseValue - incomeValue));
+        String plusOrMinus = incomeValue > expenseValue? "+":"-";
+
+        int colorRes = incomeValue > expenseValue? R.color.green :android.R.color.holo_red_dark;
+
+        entryDateTextView.setText(date);
+        entryExpenseTextView.setText(expense);
+        entryIncomeTextView.setText(income);
+
+        entryPlusOrMinusTextView.setText(plusOrMinus);
+        entryPlusOrMinusTextView.setTextColor(getResources().getColor(colorRes));
+        entryBalanceTextView.setText(balance);
     }
 
     /**
@@ -299,5 +310,10 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         detail.setCategory_cid(categoryCid);
         detail.setMark("Test Detail Data number "+testNum);
         return detail;
+    }
+
+    @Override
+    public void onClick(int setIndex, int entryIndex, Rect rect) {
+        setEntryData(entryIndex);
     }
 }

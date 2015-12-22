@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -18,21 +19,21 @@
         android:textStyle="bold"/>
 
     <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mainFragment_chartCardView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@+id/mainFragment_chartTitleTextView"
-        card_view:cardBackgroundColor="@color/chat_card_background_dark_green"
         card_view:cardCornerRadius="4dp"
-        android:layout_margin="@dimen/activity_margin_10dp"
-        android:id="@+id/view">
+        card_view:cardBackgroundColor="@color/chat_card_background_dark_blue"
+        card_view:contentPaddingLeft="10dp"
+        android:layout_margin="@dimen/activity_margin_10dp">
+
 
     <com.db.chart.view.LineChartView
         android:id="@+id/mainFragment_lineChartView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
-        android:paddingLeft="20dp"/>
+        android:padding="10dp"/>
     </android.support.v7.widget.CardView>
 
     <com.dreamer.mybudget.ui.widget.FloatingActionMenu
@@ -43,16 +44,18 @@
         android:elevation="5dp"/>
 
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/mainFragment_addButton"-->
-        <!--style="@style/CustomFAB"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:clickable="true"-->
-        <!--android:src="@drawable/ic_add_white_48dp"-->
-        <!--android:layout_marginRight="@dimen/fab_margin_20dp"-->
-        <!--android:layout_marginBottom="@dimen/fab_margin_20dp"/>-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/mainFragment_detailCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mainFragment_chartCardView"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardBackgroundColor="@color/cardview_dark_background"
+        android:layout_margin="@dimen/activity_margin_10dp"
+        card_view:contentPadding="@dimen/activity_padding_5dp">
+
+        <include layout="@layout/main_chart_entry_detail"/>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

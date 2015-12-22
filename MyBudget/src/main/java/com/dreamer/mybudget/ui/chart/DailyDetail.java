@@ -5,6 +5,7 @@ package com.dreamer.mybudget.ui.chart;
  */
 public class DailyDetail {
 
+    private long timeStamp;
     private String date;
     private float detailPrice;
 
@@ -27,5 +28,14 @@ public class DailyDetail {
 
     public void setDetailPrice(float price) {
         this.detailPrice = price;
+    }
+
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

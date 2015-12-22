@@ -16,4 +16,9 @@ public class DateUtil {
         SimpleDateFormat formatter = new SimpleDateFormat("dd");
         return formatter.format(timeMillis);
     }
+
+    public static String getYearMothDate(long timeMillis){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        return formatter.format(timeMillis);
+    }
 }
