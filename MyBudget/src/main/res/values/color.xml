@@ -8,10 +8,10 @@
     <color name="lighter_gray">#ddd</color>
     <color name="orange">#e08b36</color>
 
-    <color name="chat_card_background_dark_green">#009688</color>
+    <color name="chat_card_background_dark_green">#00B8D4</color>
     <color name="chat_line_light_yellow">#FFD54F</color>
     <color name="chat_label_light_white">#FFFFFF</color>
-    <color name="chat_line_light_blue">#80DEEA</color>
+    <color name="chat_line_light_blue">#ff0f9d58</color>
 
     <!-- Detail Layout -->
     <color name="detail_layout_highlight_yellow">@color/cream_yellow</color>

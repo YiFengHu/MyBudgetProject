@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/floatingActionButtonMenu_addBudgetButton"
         android:clickable="true"
-        android:src="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:src="@drawable/ic_attach_money_white_48dp"
         android:layout_centerHorizontal="true"/>
 
     <android.support.design.widget.FloatingActionButton
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/floatingActionButtonMenu_addAlarmButton"
         android:clickable="true"
-        android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha"
+        android:src="@drawable/ic_event_available_white_48dp"
         android:layout_centerHorizontal="true"/>
 
     <android.support.design.widget.FloatingActionButton
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/floatingActionButtonMenu_toggleButton"
         android:clickable="true"
-        android:src="@drawable/abc_btn_switch_to_on_mtrl_00012"
+        android:src="@drawable/ic_add_alarm_white_48dp"
         android:layout_centerHorizontal="true"/>
 
     <android.support.design.widget.FloatingActionButton
