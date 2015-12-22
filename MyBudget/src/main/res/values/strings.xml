@@ -3,6 +3,7 @@
 
     <!-- Main page -->
     <string name="main_menu_details">Details</string>
+    <string name="main_menu_insert_test_data">Insert test data</string>
 
     <!-- Detail Data Title -->
     <string name="detail_view_type_title">Type:</string>

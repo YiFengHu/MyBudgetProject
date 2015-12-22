@@ -47,4 +47,7 @@ dependencies {
     //DatePciker, TimePicker
     compile 'com.wdullaer:materialdatetimepicker:2.0.2'
 
+    //Chart Views
+    compile 'com.diogobernardino:williamchart:2.1'
+
 }

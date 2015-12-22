@@ -6,4 +6,9 @@
         android:title="@string/main_menu_details"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/main_test"
+        android:title="@string/main_menu_insert_test_data"
+        app:showAsAction="never" />
+
 </menu>

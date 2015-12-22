@@ -4,9 +4,13 @@ package com.dreamer.mybudget.core.db;
 import com.dreamer.mybudget.DaoSession;
 import com.dreamer.mybudget.Detail;
 import com.dreamer.mybudget.DetailDao;
+import com.dreamer.mybudget.core.db.data.CategoryType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.greenrobot.dao.query.CountQuery;
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by Roder Hu on 15/6/6.
@@ -28,9 +32,32 @@ public class DetailDBHandler {
         return -1;
     }
 
+    public void insertInTx(Detail[] details){
+       detailDao.insertInTx(details);
+    }
+
     public List<Detail> getAllDetail(){
         List<Detail> allDetails = detailDao.loadAll();
         return (allDetails==null? new ArrayList<Detail>() : allDetails);
+    }
+
+    public List<Detail> queryDetailsAfterAsc(CategoryType type, long time){
+        QueryBuilder<Detail> query = detailDao.queryBuilder();
+        query.where(DetailDao.Properties.Io.eq(type.name()));
+        query.where(DetailDao.Properties.Time.gt(time));
+        query.orderAsc(DetailDao.Properties.Time);
+        List<Detail> result = query.list();
+        return result == null? new ArrayList<Detail>():result;
+    }
+
+    public long queryMaxPriceAfter(long time){
+        QueryBuilder<Detail> query = detailDao.queryBuilder();
+        query.where(DetailDao.Properties.Time.gt(time));
+        query.orderDesc(DetailDao.Properties.Price);
+        query.limit(1);
+
+        List<Detail> result = query.list();
+        return result == null || result.isEmpty()? 0:result.get(0).getPrice();
     }
 
     public void deleteAll(){
