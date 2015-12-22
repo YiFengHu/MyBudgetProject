@@ -26,6 +26,7 @@
         card_view:cardCornerRadius="4dp"
         card_view:cardBackgroundColor="@color/chat_card_background_dark_blue"
         card_view:contentPaddingLeft="10dp"
+        card_view:cardElevation="3dp"
         android:layout_margin="@dimen/activity_margin_10dp">
 
 
@@ -36,14 +37,6 @@
         android:padding="10dp"/>
     </android.support.v7.widget.CardView>
 
-    <com.dreamer.mybudget.ui.widget.FloatingActionMenu
-        android:id="@+id/mainFragment_menu"
-        style="@style/MainFragmentFABLayoutStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="5dp"/>
-
-
     <android.support.v7.widget.CardView
         android:id="@+id/mainFragment_detailCardView"
         android:layout_width="match_parent"
@@ -51,11 +44,19 @@
         android:layout_below="@+id/mainFragment_chartCardView"
         card_view:cardCornerRadius="2dp"
         card_view:cardBackgroundColor="@color/cardview_dark_background"
+        card_view:cardElevation="3dp"
         android:layout_margin="@dimen/activity_margin_10dp"
         card_view:contentPadding="@dimen/activity_padding_5dp">
 
         <include layout="@layout/main_chart_entry_detail"/>
 
     </android.support.v7.widget.CardView>
+
+    <com.dreamer.mybudget.ui.widget.FloatingActionMenu
+        android:id="@+id/mainFragment_menu"
+        style="@style/MainFragmentFABLayoutStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="5dp"/>
 
 </RelativeLayout>
