@@ -4,6 +4,8 @@
     <color name="cream_yellow">#FFECB3</color>
     <color name="light_cream_yellow">#FFF9F3</color>
     <color name="light_cream_green">#ff80bbc4</color>
+    <color name="cream_green">#9980bbc4</color>
+
     <color name="green">#ff0f9d58</color>
     <color name="lighter_gray_d">#ddd</color>
     <color name="lighter_gray_b">#BBB</color>
@@ -13,6 +15,7 @@
     <color name="chat_line_light_yellow">#FFD54F</color>
     <color name="chat_label_light_white">#FFFFFF</color>
     <color name="chat_line_light_pink">#EC407A</color>
+    <color name="chat_line_light_blue">#82B1FF</color>
 
     <!-- Detail Layout -->
     <color name="detail_layout_highlight_yellow">@color/cream_yellow</color>

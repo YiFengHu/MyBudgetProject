@@ -1,11 +1,14 @@
 package com.dreamer.mybudget.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +68,9 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
     private TextView entryBalanceTextView;
     private Button entryDetailButton;
 
+    private TextView popText;
+    private PopupWindow pop;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +101,16 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         entryPlusOrMinusTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_plusOrMinus);
         entryBalanceTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_balanceValue);
         entryDetailButton = (Button)mRootView.findViewById(R.id.mainEntryDetail_moreButton);
+
+        popText= new TextView(getActivity());
+        popText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        popText.setTextColor(Color.WHITE);
+        pop = new PopupWindow(getActivity());
+        pop.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pop.setAnimationStyle(R.style.Animation_AppCompat_DropDownUp);
+        pop.setContentView(popText);
+        pop.setOutsideTouchable(true);
     }
 
     @Override
@@ -121,8 +138,8 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
                     @Override
                     public void run() {
 
-                        Detail[] testDatas = new Detail[30];
-                        Detail[] testDatas2 = new Detail[30];
+                        Detail[] testDatas = new Detail[31];
+                        Detail[] testDatas2 = new Detail[31];
 
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -132,10 +149,12 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
                         cal.clear(Calendar.MILLISECOND);
                         cal.set(Calendar.DAY_OF_MONTH, 1);
 
+                        long startTime = cal.getTimeInMillis();
 
-                        for (int i = 0; i < 30; i++) {
-                            testDatas[i] = newTestDetail(i, CategoryType.Expense, cal.getTimeInMillis());
-                            testDatas2[i] = newTestDetail(i, CategoryType.Income, cal.getTimeInMillis());
+
+                        for (int i = 0; i < 31; i++) {
+                            testDatas[i] = newTestDetail(i, CategoryType.Expense, startTime);
+                            testDatas2[i] = newTestDetail(i, CategoryType.Income, startTime);
 
                             Log.d(TAG, "generate data number "+i);
                         }
@@ -186,6 +205,7 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         long dbStart = System.currentTimeMillis();
         mExpenseDetails = DBAdapter.getMonthlyDetails(CategoryType.Expense);
         mIncomeDetails = DBAdapter.getMonthlyDetails(CategoryType.Income);
+        Log.d(TAG, "monthly detail count: "+mExpenseDetails.size());
 
         long dbEnd = System.currentTimeMillis();
         Log.d(TAG, "requestData: DB load duration: "+(dbEnd - dbStart));
@@ -215,6 +235,9 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
                 currentExpensePriceYScale[i] = dailyDetail.getDetailPrice();
 
                 maxPrice = dailyDetail.getDetailPrice() > maxPrice? (int)dailyDetail.getDetailPrice(): maxPrice;
+
+                Log.d(TAG, "mExpenseDetails.get("+i+"): " + mExpenseDetails.get(i).getDetailPrice());
+
             }
 
             for (int i = 0; i < mIncomeDetails.size(); i++) {
@@ -234,12 +257,12 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
             LineSet expenseDataSet = new LineSet(currentExpenseDateXScale, currentExpensePriceYScale);
 
-            expenseDataSet.setColor(getResources().getColor(R.color.chat_line_light_yellow))
+            expenseDataSet.setColor(getResources().getColor(android.R.color.holo_red_light))
                     .setThickness(Tools.fromDpToPx(4));
 
             LineSet incomeDataSet = new LineSet(currentIncomeDateXScale, currentIncomePriceYScale);
 
-            incomeDataSet.setColor(getResources().getColor(R.color.chat_line_light_pink))
+            incomeDataSet.setColor(getResources().getColor(R.color.chat_line_light_yellow))
                     .setThickness(Tools.fromDpToPx(4));
 
             lineChartView.addData(expenseDataSet);
@@ -269,7 +292,15 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         }
     }
 
-    private void setEntryData(int entryIndex){
+    private void setEntryData(int entryIndex, Rect rect){
+        if(pop.isShowing()) pop.dismiss();
+        popText.setText("Entry: " + entryIndex);
+
+        int halfWidth = lineChartView.getWidth()/2;
+        int height = lineChartView.getHeight();
+
+        pop.showAtLocation(lineChartView, Gravity.CENTER, (int)rect.exactCenterX() - halfWidth, (int)rect.exactCenterY() - height);
+
         int expenseValue = (int)mExpenseDetails.get(entryIndex).getDetailPrice();
         int incomeValue = (int)mIncomeDetails.get(entryIndex).getDetailPrice();
 
@@ -293,18 +324,21 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
     /**
      * Method to create test detail data
      */
-    private Detail newTestDetail(int testNum, CategoryType type, long startTime){
+    private Detail newTestDetail(long testNum, CategoryType type, long startTime){
         long categoryCid = DBManager.getInstance().getCategoryDBHandler()
                 .queryCategory(CategoryType.getCategoryType(CategoryType.Expense.name()), "Food").getCid();
+
+        long time = startTime + (1000L * 60L * 60L * 24L * testNum);
 
         Detail detail = new Detail();
         detail.setIo(type.name());
 
-        detail.setTime(startTime + (1000 * 60 * 60 * 24 * testNum));
+        detail.setTime(time);
+        Log.i(TAG, "newTestDetail: time["+time+"], date["+DateUtil.getYearMothDate(time)+"]");
         if(type.equals(CategoryType.Expense)) {
-            detail.setPrice(1000 + 50 * testNum);
+            detail.setPrice((int)(1000 + (50 * testNum)));
         }else{
-            detail.setPrice(3000 - 10 * testNum);
+            detail.setPrice((int)(3000 - (10 * testNum)));
 
         }
         detail.setCategory_cid(categoryCid);
@@ -314,6 +348,6 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
     @Override
     public void onClick(int setIndex, int entryIndex, Rect rect) {
-        setEntryData(entryIndex);
+        setEntryData(entryIndex, rect);
     }
 }
