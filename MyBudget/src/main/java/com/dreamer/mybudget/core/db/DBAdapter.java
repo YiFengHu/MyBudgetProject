@@ -31,8 +31,8 @@ public class DBAdapter {
         int dayCountInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         List<DailyDetail> monthDetails = new ArrayList<>(dayCountInMonth);
-        for (int i = 0; i < dayCountInMonth; i++) {
-            monthDetails.add(new DailyDetail(""+(i+1), 0F));
+        for (int i = 1; i <= dayCountInMonth; i++) {
+            monthDetails.add(new DailyDetail(""+i, 0F));
         }
 
         if(detailsOfMonth.size()>0) {
@@ -41,9 +41,11 @@ public class DBAdapter {
             DailyDetail dailyDetail;
 
             int date;
+
             for (int i = 0; i < detailsOfMonth.size(); i++) {
                 detail = detailsOfMonth.get(i);
                 date = Integer.valueOf(DateUtil.getDateOfMonth(detail.getTime()));
+                Log.d(TAG, "getMonthlyDetails: i["+i+"], date["+date+"]");
                 dailyDetail = monthDetails.get(date - 1);
 
                 dailyDetail.setDetailPrice(dailyDetail.getDetailPrice() + detail.getPrice());

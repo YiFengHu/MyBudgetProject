@@ -44,7 +44,7 @@ public class DetailDBHandler {
     public List<Detail> queryDetailsAfterAsc(CategoryType type, long time){
         QueryBuilder<Detail> query = detailDao.queryBuilder();
         query.where(DetailDao.Properties.Io.eq(type.name()));
-        query.where(DetailDao.Properties.Time.gt(time));
+        query.where(DetailDao.Properties.Time.ge(time));
         query.orderAsc(DetailDao.Properties.Time);
         List<Detail> result = query.list();
         return result == null? new ArrayList<Detail>():result;
