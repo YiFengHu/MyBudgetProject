@@ -3,7 +3,6 @@ package com.dreamer.mybudget.ui.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.db.chart.Tools;
 import com.db.chart.listener.OnEntryClickListener;
@@ -50,6 +48,8 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
     private static final String TAG = MainFragment.class.getSimpleName();
 
+    private static final int LINECHART_Y_LABEL_COUNT = 4;
+
     private List<DailyDetail> mExpenseDetails;
     private List<DailyDetail> mIncomeDetails;
     private String[] currentExpenseDateXScale;
@@ -60,7 +60,10 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
     private View mRootView = null;
     private FloatingActionMenu fabMenu = null;
     private LineChartView lineChartView = null;
+    private LineSet expenseDataSet;
+    private LineSet incomeDataSet;
 
+    private View entryDetailLayout;
     private TextView entryDateTextView;
     private TextView entryExpenseTextView;
     private TextView entryIncomeTextView;
@@ -68,8 +71,8 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
     private TextView entryBalanceTextView;
     private Button entryDetailButton;
 
-    private TextView popText;
-    private PopupWindow pop;
+    private TextView popupText;
+    private PopupWindow chartTipPopup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +97,17 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
         lineChartView = (LineChartView)mRootView.findViewById(R.id.mainFragment_lineChartView);
         lineChartView.setOnEntryClickListener(this);
+        lineChartView.setBorderSpacing(Tools.fromDpToPx(5))
+                .setTopSpacing(Tools.fromDpToPx(5))
+                .setAxisColor(getResources().getColor(R.color.chat_label_light_white))
+                .setXLabels(AxisController.LabelPosition.OUTSIDE)
+                .setYLabels(AxisController.LabelPosition.OUTSIDE)
+                .setAxisThickness(Tools.fromDpToPx(3))
+                .setLabelsColor(getResources().getColor(android.R.color.white))
+                .setXAxis(true)
+                .setYAxis(true);
+
+        entryDetailLayout = (View)mRootView.findViewById(R.id.mainEntryDetailLayout);
 
         entryDateTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_dateValue);
         entryExpenseTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_expenseValue);
@@ -102,15 +116,15 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         entryBalanceTextView = (TextView)mRootView.findViewById(R.id.mainEntryDetail_balanceValue);
         entryDetailButton = (Button)mRootView.findViewById(R.id.mainEntryDetail_moreButton);
 
-        popText= new TextView(getActivity());
-        popText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        popupText = new TextView(getActivity());
+        popupText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        popText.setTextColor(Color.WHITE);
-        pop = new PopupWindow(getActivity());
-        pop.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        pop.setAnimationStyle(R.style.Animation_AppCompat_DropDownUp);
-        pop.setContentView(popText);
-        pop.setOutsideTouchable(true);
+        popupText.setTextColor(Color.WHITE);
+        chartTipPopup = new PopupWindow(getActivity());
+        chartTipPopup.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        chartTipPopup.setAnimationStyle(R.style.Animation_AppCompat_DropDownUp);
+        chartTipPopup.setContentView(popupText);
+        chartTipPopup.setOutsideTouchable(true);
     }
 
     @Override
@@ -236,7 +250,7 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
                 maxPrice = dailyDetail.getDetailPrice() > maxPrice? (int)dailyDetail.getDetailPrice(): maxPrice;
 
-                Log.d(TAG, "mExpenseDetails.get("+i+"): " + mExpenseDetails.get(i).getDetailPrice());
+                Log.d(TAG, "mExpenseDetails.get("+i+"): date["+date+"], price[" + mExpenseDetails.get(i).getDetailPrice()+"]");
 
             }
 
@@ -255,51 +269,49 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
             Log.d(TAG, "requestData: Data set generate duration: " + (dataSetEnd - dataSetStart));
 
 
-            LineSet expenseDataSet = new LineSet(currentExpenseDateXScale, currentExpensePriceYScale);
-
-            expenseDataSet.setColor(getResources().getColor(android.R.color.holo_red_light))
+            expenseDataSet = new LineSet(currentExpenseDateXScale, currentExpensePriceYScale)
+                    .setColor(getResources().getColor(android.R.color.holo_red_light))
                     .setThickness(Tools.fromDpToPx(4));
 
-            LineSet incomeDataSet = new LineSet(currentIncomeDateXScale, currentIncomePriceYScale);
-
-            incomeDataSet.setColor(getResources().getColor(R.color.chat_line_light_yellow))
+            incomeDataSet = new LineSet(currentIncomeDateXScale, currentIncomePriceYScale)
+                    .setColor(getResources().getColor(R.color.chat_line_light_yellow))
                     .setThickness(Tools.fromDpToPx(4));
 
             lineChartView.addData(expenseDataSet);
             lineChartView.addData(incomeDataSet);
 
-            if(maxPrice%4 != 0){
-                maxPrice += (4-(maxPrice%4));
+            /**Make Y axis label maximum is multiple of {@link LINECHART_Y_LABEL_COUNT},
+             *  so that Y axis count can be {@link LINECHART_Y_LABEL_COUNT}**/
+            if(maxPrice%LINECHART_Y_LABEL_COUNT != 0){
+                maxPrice += (LINECHART_Y_LABEL_COUNT-(maxPrice%LINECHART_Y_LABEL_COUNT));
             }
 
             if(maxPrice > 0) {
-                lineChartView.setAxisBorderValues(0, maxPrice, (maxPrice / 4));
+                lineChartView.setAxisBorderValues(0, maxPrice, (maxPrice / LINECHART_Y_LABEL_COUNT));
             }
 
-            lineChartView.setBorderSpacing(Tools.fromDpToPx(5))
-                    .setTopSpacing(Tools.fromDpToPx(5))
-                    .setAxisColor(getResources().getColor(R.color.chat_label_light_white))
-                    .setXLabels(AxisController.LabelPosition.OUTSIDE)
-                    .setYLabels(AxisController.LabelPosition.OUTSIDE)
-                    .setAxisThickness(Tools.fromDpToPx(3))
-                    .setLabelsColor(getResources().getColor(android.R.color.white))
-                    .setXAxis(true)
-                    .setYAxis(true);
-
             Animation anim = new Animation();
+            //Line animation
             anim.setEasing(new QuadEase());
             lineChartView.show(anim);
         }
     }
 
-    private void setEntryData(int entryIndex, Rect rect){
-        if(pop.isShowing()) pop.dismiss();
-        popText.setText("Entry: " + entryIndex);
+    /**
+     * Show custom tip popup window and detail of day which is clicked
+     * @param entryIndex clicked entry index
+     * @param rect entry rect
+     */
+    private void showEntryData(int entryIndex, Rect rect){
+        if(chartTipPopup.isShowing()) chartTipPopup.dismiss();
+
+        String popupDate = DateUtil.getMothAndDate(mExpenseDetails.get(entryIndex).getTimeStamp());
+        popupText.setText(popupDate);
 
         int halfWidth = lineChartView.getWidth()/2;
         int height = lineChartView.getHeight();
 
-        pop.showAtLocation(lineChartView, Gravity.CENTER, (int)rect.exactCenterX() - halfWidth, (int)rect.exactCenterY() - height);
+        chartTipPopup.showAtLocation(lineChartView, Gravity.CENTER, rect.centerX() - halfWidth, rect.centerY() - height);
 
         int expenseValue = (int)mExpenseDetails.get(entryIndex).getDetailPrice();
         int incomeValue = (int)mIncomeDetails.get(entryIndex).getDetailPrice();
@@ -346,8 +358,11 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         return detail;
     }
 
+    /**
+     * Callback of {@link OnEntryClickListener}
+     */
     @Override
     public void onClick(int setIndex, int entryIndex, Rect rect) {
-        setEntryData(entryIndex, rect);
+        showEntryData(entryIndex, rect);
     }
 }
