@@ -195,6 +195,7 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
                             public void run() {
                                 lineChartView.reset();
                                 requestData();
+                                lineChartView.notifyDataUpdate();
                             }
                         });
 
@@ -317,6 +318,20 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
      * @param rect entry rect
      */
     private void showEntryData(int entryIndex, Rect rect){
+        Log.d(TAG, "showEntryData() called with: " + "entryIndex = [" + entryIndex + "], rect = [" + rect + "]");
+
+        entryIndex -= 1;
+
+        //TODO Fix UI shift deviation
+
+        if(entryIndex<0 || entryIndex>incomeDataSet.size()) return;
+
+        showChartTipPopupWindow(entryIndex, rect);
+        showDailyDetail(entryIndex);
+    }
+
+
+    private void showChartTipPopupWindow(int entryIndex, Rect rect) {
         if(chartTipPopup.isShowing()) chartTipPopup.dismiss();
 
         String popupDate = DateUtil.getMothAndDate(mExpenseDetails.get(entryIndex).getTimeStamp());
@@ -326,7 +341,9 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         int height = lineChartView.getHeight();
 
         chartTipPopup.showAtLocation(lineChartView, Gravity.CENTER, rect.centerX() - halfWidth, rect.centerY() - height);
+    }
 
+    private void showDailyDetail(int entryIndex) {
         int expenseValue = (int)mExpenseDetails.get(entryIndex).getDetailPrice();
         int incomeValue = (int)mIncomeDetails.get(entryIndex).getDetailPrice();
 
@@ -377,6 +394,7 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
      */
     @Override
     public void onClick(int setIndex, int entryIndex, Rect rect) {
+        Log.d(TAG, "onClick() called with: " + "setIndex = [" + setIndex + "], entryIndex = [" + entryIndex + "], rect = [" + rect + "]");
         showEntryData(entryIndex, rect);
     }
 }

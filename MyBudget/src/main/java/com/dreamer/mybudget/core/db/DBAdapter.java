@@ -36,6 +36,9 @@ public class DBAdapter {
             monthDetails.add(new DailyDetail(""+i, 0F));
         }
 
+        monthDetails.add(new DailyDetail(""+(dayCountInMonth+1), 0F));
+
+
         if(detailsOfMonth.size()>0) {
 
             Detail detail;
@@ -52,6 +55,21 @@ public class DBAdapter {
                 dailyDetail.setDetailPrice(dailyDetail.getDetailPrice() + detail.getPrice());
                 dailyDetail.setTimeStamp(detail.getTime());
             }
+
+
+            //TODO Last value is for adjusting deviation of ui click event
+            DailyDetail lastUnUsedDailyDetail = monthDetails.get(monthDetails.size()-1);
+            DailyDetail lastOneDailyDetail = monthDetails.get(monthDetails.size()-2);
+            DailyDetail lastSecondDailyDetail = monthDetails.get(monthDetails.size()-3);
+
+            int lastSecondValue = (int)lastSecondDailyDetail.getDetailPrice();
+            int lastOneValue = (int)lastOneDailyDetail.getDetailPrice();
+
+            int valueDistance = Math.abs(lastOneValue - lastSecondValue);
+            int lastUnUsedValue = lastOneValue > lastSecondValue?
+                    lastOneValue + valueDistance : lastOneValue - valueDistance;
+            lastUnUsedDailyDetail.setDetailPrice(lastUnUsedValue);
+            lastUnUsedDailyDetail.setTimeStamp(lastOneDailyDetail.getTimeStamp());
         }
 
         return monthDetails;
