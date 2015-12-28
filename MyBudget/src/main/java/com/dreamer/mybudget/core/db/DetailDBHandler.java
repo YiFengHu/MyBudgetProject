@@ -50,6 +50,15 @@ public class DetailDBHandler {
         return result == null? new ArrayList<Detail>():result;
     }
 
+    public List<Detail> queryDurationDetailsAsc(long startTime, long endTime){
+        QueryBuilder<Detail> query = detailDao.queryBuilder();
+        query.where(DetailDao.Properties.Time.ge(startTime));
+        query.where(DetailDao.Properties.Time.lt(endTime));
+        query.orderAsc(DetailDao.Properties.Time);
+        List<Detail> result = query.list();
+        return result == null? new ArrayList<Detail>():result;
+    }
+
     public long queryMaxPriceAfter(long time){
         QueryBuilder<Detail> query = detailDao.queryBuilder();
         query.where(DetailDao.Properties.Time.gt(time));

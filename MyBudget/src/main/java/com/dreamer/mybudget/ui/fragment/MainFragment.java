@@ -232,8 +232,8 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         chartTitleTextView.setText(getString(R.string.main_chart_title_monthly_detail, DateUtil.getMonthName(datumTime)));
 
         long dbStart = System.currentTimeMillis();
-        mExpenseDetails = DBAdapter.getMonthlyDetails(datumTime, CategoryType.Expense);
-        mIncomeDetails = DBAdapter.getMonthlyDetails(datumTime, CategoryType.Income);
+        mExpenseDetails = DBAdapter.getMonthlyDailyDetails(datumTime, CategoryType.Expense);
+        mIncomeDetails = DBAdapter.getMonthlyDailyDetails(datumTime, CategoryType.Income);
         Log.d(TAG, "monthly detail count: "+mExpenseDetails.size());
 
         long dbEnd = System.currentTimeMillis();

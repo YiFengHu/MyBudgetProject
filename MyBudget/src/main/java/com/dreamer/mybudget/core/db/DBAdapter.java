@@ -17,7 +17,7 @@ import java.util.List;
 public class DBAdapter {
     private static final String TAG = DBAdapter.class.getSimpleName();
 
-    public static List<DailyDetail> getMonthlyDetails(long datumTime, CategoryType type){
+    public static List<DailyDetail> getMonthlyDailyDetails(long datumTime, CategoryType type){
         // get today and clear time of day
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(datumTime);
@@ -49,7 +49,7 @@ public class DBAdapter {
             for (int i = 0; i < detailsOfMonth.size(); i++) {
                 detail = detailsOfMonth.get(i);
                 date = Integer.valueOf(DateUtil.getDateOfMonth(detail.getTime()));
-                Log.d(TAG, "getMonthlyDetails: i["+i+"], date["+date+"]");
+                Log.d(TAG, "getMonthlyDailyDetails: i["+i+"], date["+date+"]");
                 dailyDetail = monthDetails.get(date - 1);
 
                 dailyDetail.setDetailPrice(dailyDetail.getDetailPrice() + detail.getPrice());
@@ -75,7 +75,7 @@ public class DBAdapter {
         return monthDetails;
     }
 
-    public static long getMaxPriceOfMonth(){
+    public static long getMaxPriceOfMonth() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
         cal.clear(Calendar.MINUTE);
@@ -83,5 +83,61 @@ public class DBAdapter {
         cal.clear(Calendar.MILLISECOND);
         cal.set(Calendar.DAY_OF_MONTH, 1);
         return DBManager.getInstance().getDetailDBHandler().queryMaxPriceAfter(cal.getTimeInMillis());
+    }
+
+    public static List<Detail> getDailyDetail(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+
+        long start = cal.getTimeInMillis();
+
+        cal.set(Calendar.HOUR_OF_DAY, 24);
+        long end = cal.getTimeInMillis();
+
+        return DBManager.getInstance().getDetailDBHandler()
+                .queryDurationDetailsAsc(start , end);
+    }
+
+    public static List<Detail> getWeeklyDetail(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+        cal.set(Calendar.DAY_OF_WEEK, 1);
+
+        long start = cal.getTimeInMillis();
+
+        cal.set(Calendar.DAY_OF_WEEK, 7);
+        cal.set(Calendar.HOUR_OF_DAY, 24);
+
+        long end = cal.getTimeInMillis();
+
+        return DBManager.getInstance().getDetailDBHandler()
+                .queryDurationDetailsAsc(start , end);
+    }
+
+    public static List<Detail> getMonthlyDetail(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        int dayCount = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        long start = cal.getTimeInMillis();
+
+        cal.set(Calendar.DAY_OF_MONTH, dayCount);
+        cal.set(Calendar.HOUR_OF_DAY, 24);
+
+        long end = cal.getTimeInMillis();
+
+        return DBManager.getInstance().getDetailDBHandler()
+                .queryDurationDetailsAsc(start , end);
     }
 }

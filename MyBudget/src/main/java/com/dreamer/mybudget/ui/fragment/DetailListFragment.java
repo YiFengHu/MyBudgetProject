@@ -18,8 +18,10 @@ import com.dreamer.mybudget.base.BaseFragment;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.ui.activity.MainActivity;
 import com.dreamer.mybudget.ui.adapter.DetailListAdapter;
+import com.dreamer.mybudget.ui.adapter.DetailListAdapter.DetailBrowseMode;
 import com.dreamer.mybudget.ui.recyclerView.SpacesItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,10 +32,14 @@ public class DetailListFragment extends BaseFragment implements Toolbar.OnMenuIt
     private View rootView = null;
     private RecyclerView recyclerView = null;
 
+    private DetailListAdapter mDetailListAdapter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mDetailListAdapter = new DetailListAdapter(getActivity(), new ArrayList<Detail>());
     }
 
     @Override
@@ -55,32 +61,42 @@ public class DetailListFragment extends BaseFragment implements Toolbar.OnMenuIt
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getActivity());
 
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.detail_list_spacing);
-        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+//        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.detail_list_spacing);
+//        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         recyclerView.setLayoutManager(manager);
 
         initToolbar();
 
-        List<Detail> data = DBManager.getInstance().getDetailDBHandler().getAllDetail();
-        recyclerView.setAdapter(new DetailListAdapter(getActivity(), data));
+        recyclerView.setAdapter(mDetailListAdapter);
+        mDetailListAdapter.loadData(DetailBrowseMode.Daily);
     }
 
     private void initToolbar() {
-        ((MainActivity)getActivity()).setToolBarWithTitle(getString(R.string.detail_list_title) ,this);
+        ((MainActivity)getActivity()).setToolBarWithTitle(getString(R.string.detail_list_title), this);
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()){
             case R.id.detailList_daily:
+
+                loadData(DetailBrowseMode.Daily);
                 return true;
 
             case R.id.detailList_weekly:
+
+                loadData(DetailBrowseMode.Weekly);
                 return true;
 
             case R.id.detailList_monthly:
+
+                loadData(DetailBrowseMode.Monthly);
                 return true;
         }
         return false;
+    }
+
+    private void loadData(DetailBrowseMode mode) {
+        mDetailListAdapter.loadData(mode);
     }
 }

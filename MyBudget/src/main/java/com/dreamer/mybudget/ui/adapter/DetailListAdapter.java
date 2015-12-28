@@ -10,8 +10,11 @@ import android.widget.TextView;
 
 import com.dreamer.mybudget.Detail;
 import com.dreamer.mybudget.R;
+import com.dreamer.mybudget.core.db.DBAdapter;
+import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
 import com.dreamer.mybudget.core.db.data.DefaultCategory;
+import com.dreamer.mybudget.ui.fragment.DetailListFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -24,6 +27,9 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
     private static final String TAG = DetailListAdapter.class.getSimpleName();
     private Context context = null;
     private List<Detail> data = null;
+
+    private DetailBrowseMode mCurrentMode = DetailBrowseMode.All;
+    private DBManager mDBManager = DBManager.getInstance();
 
     public DetailListAdapter(Context context, List<Detail> data){
         this.context = context;
@@ -70,13 +76,38 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
     }
 
     private String getDate(long time) {
-        SimpleDateFormat fomatter = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat fomatter = new SimpleDateFormat("yyyy/MM/dd hh:mm aa");
         return fomatter.format(time);
     }
 
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void loadData(DetailBrowseMode mode) {
+        mCurrentMode = mode;
+
+        switch (mode){
+
+            case Daily:
+                data = DBAdapter.getDailyDetail();
+                break;
+
+            case Weekly:
+                data = DBAdapter.getWeeklyDetail();
+                break;
+
+            case Monthly:
+                data = DBAdapter.getMonthlyDetail();
+                break;
+
+            case All:
+                data = mDBManager.getDetailDBHandler().getAllDetail();
+                break;
+        }
+
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -95,5 +126,9 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
             dateTextView = (TextView)itemView.findViewById(R.id.adapterItemDetailList_dateTextView);
 
         }
+    }
+
+    public enum DetailBrowseMode{
+        Daily, Weekly, Monthly, All;
     }
 }
