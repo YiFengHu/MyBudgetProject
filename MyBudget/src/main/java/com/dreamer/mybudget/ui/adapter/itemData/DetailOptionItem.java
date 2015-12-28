@@ -10,6 +10,8 @@ public class DetailOptionItem {
     private DetailContent detailContent;
     private String option;
 
+    private Object tag;
+
     public DetailOptionItem(DetailContent detailContent, String option){
         this.detailContent = detailContent;
         this.option = option;
@@ -29,5 +31,14 @@ public class DetailOptionItem {
 
     public void setOption(String option) {
         this.option = option;
+    }
+
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public void setTag(Object tag) {
+        this.tag = tag;
     }
 }

@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         DBManager.getInstance().getDetailDBHandler().deleteAll();
 
         Category category = DBManager.getInstance()
-                .getCategoryDBHandler().queryCategory(CategoryType.Expense, DefaultCategory.EXPENSE_FOOD);
+                .getCategoryDBHandler().queryCategory(CategoryType.Expense, DefaultCategory.EXPENSE_FOOD.getDbName());
 
         for(int i=0; i<20;i++) {
             Detail detail = new Detail();

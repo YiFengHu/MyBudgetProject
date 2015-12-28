@@ -4,7 +4,7 @@
     <!-- Main page -->
     <string name="main_menu_details">Details</string>
     <string name="main_menu_insert_test_data">Insert test data</string>
-    <string name="main_chart_title_monthly_detail">Expend / Income of this month ...</string>
+    <string name="main_chart_title_monthly_detail">Expend / Income of  %1$s ...</string>
 
     <!-- Main Chart Entry -->
     <string name="main_chart_entry_date_title">Date</string>

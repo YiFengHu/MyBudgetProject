@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">MyBudget</string>
+
+    <!-- Main page -->
+    <string name="main_menu_details">明細</string>
+    <string name="main_menu_insert_test_data">輸入測試資料</string>
+    <string name="main_chart_title_monthly_detail">%1$s 的花費和支出...</string>
+
+    <!-- Main Chart Entry -->
+    <string name="main_chart_entry_date_title">日期</string>
+    <string name="main_chart_entry_expense_title">花費</string>
+    <string name="main_chart_entry_income_title">收入</string>
+    <string name="main_chart_entry_more_button">更多...</string>
+
+
+    <!-- Detail Data Title -->
+    <string name="detail_view_type_title">支出類型:</string>
+    <string name="detail_view_date">日期:</string>
+    <string name="detail_view_price">價錢:</string>
+    <string name="detail_view_category">類別:</string>
+    <string name="detail_view_note">備註:</string>
+
+    <!-- Detail Type Category-->
+    <string name="detail_type_category_income">收入</string>
+    <string name="detail_type_category_expense">花費</string>
+
+    <!-- Expense Category -->
+    <string name="category_expense_food">食物</string>
+    <string name="category_expense_clothing">衣物</string>
+    <string name="category_expense_household">家裡開銷</string>
+    <string name="category_expense_transportation">交通</string>
+    <string name="category_expense_leisure">休閒</string>
+    <string name="category_expense_rent">房租</string>
+    <string name="category_expense_self_development">自我開發</string>
+    <string name="category_expense_other">其他</string>
+
+    <!-- Income Category -->
+    <string name="category_income_salary">薪水</string>
+    <string name="category_income_pocket_money">零用錢</string>
+    <string name="category_income_bonus">獎金</string>
+    <string name="category_income_other">其他</string>
+
+    <!-- Add Detail -->
+    <string name="add_detail_title">新增明細</string>
+    <string name="add_detail_submit">提交</string>
+    <string name="add_detail_view_type">支出類型</string>
+    <string name="add_detail_view_date">日期</string>
+    <string name="add_detail_view_price">價錢</string>
+    <string name="add_detail_view_category">類別</string>
+    <string name="add_detail_view_note">備註</string>
+    <string name="add_detail_value_invalid_hint">有些欄位內容無效!</string>
+
+    <!-- Detail List -->
+    <string name="detail_list_title">明細料表</string>
+    <string name="detail_menu_daily">日明細</string>
+    <string name="detail_menu_weekly">週明細</string>
+    <string name="detail_menu_monthly">月明細</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Date Picker -->
+    <string name="confirm">確認</string>
+    <string name="title_tab_start_date">開始日期</string>
+    <string name="ttile_tab_end_date">結束日期</string>
+
+</resources>

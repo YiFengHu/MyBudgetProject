@@ -1,112 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/mainFragment_chartTitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:text="@string/main_chart_title_monthly_detail"
-        android:layout_margin="@dimen/activity_margin_10dp"
-        android:typeface="serif"
-        android:textStyle="bold"/>
-
-    <LinearLayout
-        android:id="@+id/mainFragment_legendLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mainFragment_chartTitleTextView"
-        android:layout_marginTop="@dimen/activity_padding_5dp"
-        android:layout_marginLeft="@dimen/activity_padding_10dp"
-        android:layout_marginStart="@dimen/activity_padding_10dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/mainFragment_legendIncomeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            android:text="@string/main_chart_entry_income_title"/>
-
-        <View
-            android:id="@+id/mainFragment_legendIncomeView"
-            android:layout_width="20dp"
-            android:layout_height="4dp"
-            android:background="@color/chat_line_light_yellow"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/activity_padding_5dp"
-            android:layout_marginStart="@dimen/activity_padding_5dp"/>
-
-        <TextView
-            android:id="@+id/mainFragment_legendExpenseTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            android:text="@string/main_chart_entry_expense_title"
-            android:layout_marginLeft="@dimen/activity_padding_20dp"
-            android:layout_marginStart="@dimen/activity_padding_20dp"/>
-
-        <View
-            android:id="@+id/mainFragment_legendExpenseView"
-            android:layout_width="20dp"
-            android:layout_height="4dp"
-            android:background="@android:color/holo_red_light"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/activity_padding_5dp"
-            android:layout_marginStart="@dimen/activity_padding_5dp"/>
-    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/mainFragment_chartCardView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/mainFragment_legendLayout"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardBackgroundColor="@color/light_cream_green"
-        card_view:contentPaddingLeft="10dp"
-        card_view:cardElevation="3dp"
-        android:layout_margin="@dimen/activity_margin_10dp">
+            <TextView
+                android:id="@+id/mainFragment_chartTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_margin="@dimen/activity_margin_10dp"
+                tools:text="@string/main_chart_title_monthly_detail"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <LinearLayout
+                android:id="@+id/mainFragment_legendLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mainFragment_chartTitleTextView"
+                android:layout_marginLeft="@dimen/activity_padding_10dp"
+                android:layout_marginStart="@dimen/activity_padding_10dp"
+                android:layout_marginTop="@dimen/activity_padding_5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/mainFragment_legendIncomeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/main_chart_entry_income_title"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp" />
+
+                <View
+                    android:id="@+id/mainFragment_legendIncomeView"
+                    android:layout_width="20dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_padding_5dp"
+                    android:layout_marginStart="@dimen/activity_padding_5dp"
+                    android:background="@color/chat_line_light_yellow" />
+
+                <TextView
+                    android:id="@+id/mainFragment_legendExpenseTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_padding_20dp"
+                    android:layout_marginStart="@dimen/activity_padding_20dp"
+                    android:text="@string/main_chart_entry_expense_title"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp" />
+
+                <View
+                    android:id="@+id/mainFragment_legendExpenseView"
+                    android:layout_width="20dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/activity_padding_5dp"
+                    android:layout_marginStart="@dimen/activity_padding_5dp"
+                    android:background="@android:color/holo_red_light" />
+            </LinearLayout>
 
 
-    <com.db.chart.view.LineChartView
-        android:id="@+id/mainFragment_lineChartView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/activity_margin_10dp"/>
-    </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/mainFragment_chartCardView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/mainFragment_legendLayout"
+                android:layout_margin="@dimen/activity_margin_10dp"
+                card_view:cardBackgroundColor="@color/light_cream_green"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="3dp"
+                card_view:contentPadding="@dimen/activity_margin_10dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/mainFragment_detailCardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mainFragment_chartCardView"
-        card_view:cardCornerRadius="2dp"
-        card_view:cardBackgroundColor="@color/cardview_dark_background"
-        card_view:cardElevation="3dp"
-        android:layout_margin="@dimen/activity_margin_10dp"
-        card_view:contentPadding="@dimen/activity_padding_5dp">
 
-        <include layout="@layout/main_chart_entry_detail"/>
+                <com.db.chart.view.LineChartView
+                    android:id="@+id/mainFragment_lineChartView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.v7.widget.CardView>
 
-    </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/mainFragment_detailCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mainFragment_chartCardView"
+                android:layout_margin="@dimen/activity_margin_10dp"
+                card_view:cardBackgroundColor="@color/cardview_dark_background"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="3dp"
+                card_view:contentPadding="@dimen/activity_padding_5dp">
+
+                <include layout="@layout/main_chart_entry_detail" />
+
+            </android.support.v7.widget.CardView>
+
+
+        </RelativeLayout>
+    </ScrollView>
 
     <com.dreamer.mybudget.ui.widget.FloatingActionMenu
         android:id="@+id/mainFragment_menu"
         style="@style/MainFragmentFABLayoutStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="5dp"/>
-
+        android:elevation="5dp" />
 </RelativeLayout>

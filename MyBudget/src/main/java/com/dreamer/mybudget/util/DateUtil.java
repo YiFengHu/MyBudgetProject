@@ -21,4 +21,18 @@ public class DateUtil {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         return formatter.format(timeMillis);
     }
+
+    public static String getDayName(long timeMillis){
+        //Result example : "Monday", "Tuesday" ...
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+        return formatter.format(timeMillis);
+    }
+
+    public static String getMonthName(long timeMillis){
+        //Result example : "June", "July" ...
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM");
+        return formatter.format(timeMillis);
+    }
+
+
 }

@@ -31,6 +31,7 @@ import com.dreamer.mybudget.base.BaseFragment;
 import com.dreamer.mybudget.core.db.DBAdapter;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
+import com.dreamer.mybudget.core.db.data.DefaultCategory;
 import com.dreamer.mybudget.ui.activity.AddDetailActivity;
 import com.dreamer.mybudget.ui.activity.MainActivity;
 import com.dreamer.mybudget.ui.chart.DailyDetail;
@@ -50,6 +51,11 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
     private static final int LINECHART_Y_LABEL_COUNT = 4;
 
+    /**
+     * Datum time for showing chart view, default is now.
+     */
+    private long datumTime = System.currentTimeMillis();
+
     private List<DailyDetail> mExpenseDetails;
     private List<DailyDetail> mIncomeDetails;
     private String[] currentExpenseDateXScale;
@@ -59,6 +65,9 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
     private View mRootView = null;
     private FloatingActionMenu fabMenu = null;
+
+    private TextView chartTitleTextView;
+
     private LineChartView lineChartView = null;
     private LineSet expenseDataSet;
     private LineSet incomeDataSet;
@@ -95,10 +104,13 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
         fabMenu = (FloatingActionMenu)mRootView.findViewById(R.id.mainFragment_menu);
         fabMenu.setActionClickListener(this);
 
+        chartTitleTextView = (TextView) mRootView.findViewById(R.id.mainFragment_chartTitleTextView);
+
         lineChartView = (LineChartView)mRootView.findViewById(R.id.mainFragment_lineChartView);
         lineChartView.setOnEntryClickListener(this);
-        lineChartView.setBorderSpacing(Tools.fromDpToPx(5))
-                .setTopSpacing(Tools.fromDpToPx(5))
+        lineChartView
+//                .setBorderSpacing(Tools.fromDpToPx(5))
+//                .setTopSpacing(Tools.fromDpToPx(5))
                 .setAxisColor(getResources().getColor(R.color.chat_label_light_white))
                 .setXLabels(AxisController.LabelPosition.OUTSIDE)
                 .setYLabels(AxisController.LabelPosition.OUTSIDE)
@@ -216,9 +228,11 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
 
 
     private void requestData() {
+        chartTitleTextView.setText(getString(R.string.main_chart_title_monthly_detail, DateUtil.getMonthName(datumTime)));
+
         long dbStart = System.currentTimeMillis();
-        mExpenseDetails = DBAdapter.getMonthlyDetails(CategoryType.Expense);
-        mIncomeDetails = DBAdapter.getMonthlyDetails(CategoryType.Income);
+        mExpenseDetails = DBAdapter.getMonthlyDetails(datumTime, CategoryType.Expense);
+        mIncomeDetails = DBAdapter.getMonthlyDetails(datumTime, CategoryType.Income);
         Log.d(TAG, "monthly detail count: "+mExpenseDetails.size());
 
         long dbEnd = System.currentTimeMillis();
@@ -338,12 +352,12 @@ public class MainFragment extends BaseFragment implements Toolbar.OnMenuItemClic
      */
     private Detail newTestDetail(long testNum, CategoryType type, long startTime){
         long categoryCid = DBManager.getInstance().getCategoryDBHandler()
-                .queryCategory(CategoryType.getCategoryType(CategoryType.Expense.name()), "Food").getCid();
+                .queryCategory(CategoryType.getCategoryType(CategoryType.Expense.getTypeDBName()), DefaultCategory.EXPENSE_FOOD.getDbName()).getCid();
 
         long time = startTime + (1000L * 60L * 60L * 24L * testNum);
 
         Detail detail = new Detail();
-        detail.setIo(type.name());
+        detail.setIo(type.getTypeDBName());
 
         detail.setTime(time);
         Log.i(TAG, "newTestDetail: time["+time+"], date["+DateUtil.getYearMothDate(time)+"]");

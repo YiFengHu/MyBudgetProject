@@ -28,7 +28,6 @@ public class CategoryDBHandler {
     public CategoryDBHandler(Context context, DaoSession daoSession){
         this.context = context;
         this.categoryDao = daoSession.getCategoryDao();
-        DefaultCategory.init(context);
         insertDefaultCategories();
     }
 
@@ -41,26 +40,32 @@ public class CategoryDBHandler {
 
         if(categoryCount==0) {
             defaultExpenseCategories =
-                    new String[]{DefaultCategory.EXPENSE_FOOD, DefaultCategory.EXPENSE_CLOTHING,
-                            DefaultCategory.EXPENSE_HOUSEHOLD, DefaultCategory.EXPENSE_LEISURE,
-                            DefaultCategory.EXPENSE_TRANSPORTATION, DefaultCategory.EXPENSE_SELF_DEVELOPMENT,
-                            DefaultCategory.EXPENSE_RENT, DefaultCategory.EXPENSE_OTHER};
+                    new String[]{DefaultCategory.EXPENSE_FOOD.getDbName(),
+                            DefaultCategory.EXPENSE_CLOTHING.getDbName(),
+                            DefaultCategory.EXPENSE_HOUSEHOLD.getDbName(),
+                            DefaultCategory.EXPENSE_LEISURE.getDbName(),
+                            DefaultCategory.EXPENSE_TRANSPORTATION.getDbName(),
+                            DefaultCategory.EXPENSE_SELF_DEVELOPMENT.getDbName(),
+                            DefaultCategory.EXPENSE_RENT.getDbName(),
+                            DefaultCategory.EXPENSE_OTHER.getDbName()};
 
             defaultIncomeCategories =
-                    new String[]{DefaultCategory.INCOME_SALARY, DefaultCategory.INCOME_BONUS,
-                            DefaultCategory.INCOME_POCKET_MONEY, DefaultCategory.INCOME_OTHER};
+                    new String[]{DefaultCategory.INCOME_SALARY.getDbName(),
+                            DefaultCategory.INCOME_BONUS.getDbName(),
+                            DefaultCategory.INCOME_POCKET_MONEY.getDbName(),
+                            DefaultCategory.INCOME_OTHER.getDbName()};
             Category category;
             for (int i = 0; i < defaultExpenseCategories.length; i++) {
                 category = new Category();
                 category.setCategory_name(defaultExpenseCategories[i]);
-                category.setCategory_type(CategoryType.Expense.name());
+                category.setCategory_type(CategoryType.Expense.getTypeDBName());
                 insertCategory(category);
             }
 
             for (int i = 0; i < defaultIncomeCategories.length; i++) {
                 category = new Category();
                 category.setCategory_name(defaultIncomeCategories[i]);
-                category.setCategory_type(CategoryType.Income.name());
+                category.setCategory_type(CategoryType.Income.getTypeDBName());
                 insertCategory(category);
             }
         }
@@ -74,17 +79,17 @@ public class CategoryDBHandler {
         return -1;
     }
 
-    public Category queryCategory(CategoryType categoryType, String categoryName){
+    public Category queryCategory(CategoryType categoryType, String catecoryDBName){
         QueryBuilder<Category> queryBuilder = categoryDao.queryBuilder();
-        queryBuilder.where(CategoryDao.Properties.Category_name.eq(categoryName));
-        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType.name()));
+        queryBuilder.where(CategoryDao.Properties.Category_name.eq(catecoryDBName));
+        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType.getTypeDBName()));
 
         return queryBuilder.unique();
     }
 
     public List<Category> queryCategories(CategoryType categoryType){
         QueryBuilder<Category> queryBuilder = categoryDao.queryBuilder();
-        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType.name()));
+        queryBuilder.where(CategoryDao.Properties.Category_type.eq(categoryType.getTypeDBName()));
         List<Category> result = queryBuilder.list();
         return result == null? new ArrayList<Category>(): result;
     }

@@ -20,6 +20,7 @@ import com.dreamer.mybudget.base.BaseActivity;
 import com.dreamer.mybudget.base.CircularRevealActivity;
 import com.dreamer.mybudget.core.db.DBManager;
 import com.dreamer.mybudget.core.db.data.CategoryType;
+import com.dreamer.mybudget.core.db.data.DefaultCategory;
 import com.dreamer.mybudget.core.db.data.DetailContent;
 import com.dreamer.mybudget.ui.custom.DetailLayout;
 import com.dreamer.mybudget.ui.custom.TypeEditText;
@@ -178,7 +179,7 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
 
                     StringBuilder date = new StringBuilder();
                     date.append(year).append("-").append(monthOfYear).append("-").append(dayOfMonth);
-                    detailLayout.typeContent(DetailLayout.ContentViewType.date, date.toString());
+                    detailLayout.typeContent(DetailLayout.ContentViewType.date, null, date.toString());
 
                     nextOption(false);
                 }
@@ -251,9 +252,19 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
         DetailOptionItem optionItem = optionAdapter.getItem(position);
         switch (optionItem.getDetailContent()){
             case Type:
-                final CategoryType type = CategoryType.valueOf(optionItem.getOption());
+
+                String typeDBName = "";
+                if(optionItem.getTag() instanceof String){
+                    typeDBName = ((String) optionItem.getTag());
+                }
+
+                final CategoryType type = CategoryType.getCategoryType(typeDBName);
+                Log.d(TAG, "type: "+type);
+
+                detailLayout.setCurrentTypeDBName(typeDBName);
                 detailLayout.typeContent(
                         DetailLayout.ContentViewType.type,
+                        type.getTypeDBName(),
                         optionItem.getOption(),
                         new TypeEditText.OnTypeListener() {
                             @Override
@@ -273,7 +284,12 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
                 break;
 
             case Category:
-                detailLayout.typeContent(DetailLayout.ContentViewType.category, optionItem.getOption());
+                String categoryDBName = "";
+                if(optionItem.getTag() instanceof String){
+                    categoryDBName = ((String) optionItem.getTag());
+                }
+                detailLayout.setCurrentTypeDBName(categoryDBName);
+                detailLayout.typeContent(DetailLayout.ContentViewType.category, categoryDBName, optionItem.getOption());
                 nextOption(false);
 
                 break;
@@ -318,9 +334,15 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
     public List<DetailOptionItem> getTypeOptions(){
         if (typeOptionsList.isEmpty()) {
 
-            typeOptionsList.add(new DetailOptionItem(DetailContent.Type, CategoryType.Income.name()));
+            DetailOptionItem item = new DetailOptionItem(DetailContent.Type, getString(CategoryType.Income.getTypeNameRes()));
+            item.setTag(CategoryType.Income.getTypeDBName());
+            typeOptionsList.add(item);
+
             typeOptionsList.add(new DetailOptionItem(DetailContent.Type, ""));
-            typeOptionsList.add(new DetailOptionItem(DetailContent.Type, CategoryType.Expense.name()));
+
+            item = new DetailOptionItem(DetailContent.Type, getString(CategoryType.Expense.getTypeNameRes()));
+            item.setTag(CategoryType.Expense.getTypeDBName());
+            typeOptionsList.add(item);
         }
         return typeOptionsList;
     }
@@ -330,8 +352,22 @@ public class AddDetailActivity extends CircularRevealActivity implements DetailL
         categoryOptionsList.clear();
         List<Category> categories = DBManager.getInstance()
                 .getCategoryDBHandler().queryCategories(categoryType);
-        for(Category category : categories){
-            categoryOptionsList.add(new DetailOptionItem(DetailContent.Category ,category.getCategory_name()));
+
+        String optionText = "";
+        DetailOptionItem item;
+        for(Category eachCategory : categories){
+            DefaultCategory defaultCategory = DefaultCategory.getDefaultCategory(eachCategory.getCategory_name());
+
+            if(defaultCategory!=null){
+                optionText = getString(defaultCategory.getCategoryNameRes());
+            }else {
+                Log.e(TAG, "getCategoryOptions: category null!!: category db name is " + eachCategory.getCategory_name());
+                optionText = eachCategory.getCategory_name();
+            }
+
+            item = new DetailOptionItem(DetailContent.Category , optionText);
+            item.setTag(eachCategory.getCategory_name());
+            categoryOptionsList.add(item);
         }
 
 

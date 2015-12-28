@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.dreamer.mybudget.core.db.data.DefaultCategory;
 
 /**
  * Created by Roder Hu on 15/7/2.
@@ -29,6 +30,16 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
 
     private static final int ITEM_COUNT = 5;
 
+    /**
+     * Should be one of {@link CategoryType#typeDBName}
+     */
+    private String currentTypeDBName;
+
+    /**
+     * Should be one of {@link DefaultCategory#dbName}
+     */
+    private String currentCategoryDBName;
+
     private LayoutInflater layoutInflater = null;
     private LinearLayout container = null;
 
@@ -37,6 +48,24 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
     private OnClickListener rawLayoutClickListener = null;
 
     private OnDetailItemClick onDetailItemClickListener = null;
+
+    private Map<ContentViewType, String> dbReplationMap = new HashMap<>(2);
+
+    public String getCurrentTypeDBName() {
+        return currentTypeDBName;
+    }
+
+    public void setCurrentTypeDBName(String currentTypeDBName) {
+        this.currentTypeDBName = currentTypeDBName;
+    }
+
+    public String getCurrentCategoryDBName() {
+        return currentCategoryDBName;
+    }
+
+    public void setCurrentCategoryDBName(String currentCategoryDBName) {
+        this.currentCategoryDBName = currentCategoryDBName;
+    }
 
     public void setOnDetailItemClick(OnDetailItemClick onDetailItemClick) {
         this.onDetailItemClickListener = onDetailItemClick;
@@ -204,13 +233,23 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
 
     }
 
-    public void typeContent(ContentViewType type, String content, TypeEditText.OnTypeListener lisnter){
+    public void typeContent(ContentViewType type, String dbName, String content, TypeEditText.OnTypeListener lisnter){
         allRawViews.get(type).valueEditText.setOnTypeListener(lisnter);
         allRawViews.get(type).valueEditText.startTypeText(content);
+
+        if((ContentViewType.category.equals(type) || ContentViewType.type.equals(type)
+            && dbName!=null)){
+            dbReplationMap.put(type, dbName);
+        }
     }
 
-    public void typeContent(ContentViewType type, String content){
+    public void typeContent(ContentViewType type, String dbName, String content){
         allRawViews.get(type).valueEditText.startTypeText(content);
+
+        if((ContentViewType.category.equals(type) || ContentViewType.type.equals(type)
+                && dbName!=null)){
+            dbReplationMap.put(type, dbName);
+        }
     }
 
     public void readyInputKeyboardOnNote(){
@@ -274,10 +313,10 @@ public class DetailLayout extends RelativeLayout implements View.OnFocusChangeLi
 
     public Detail convertToDetail(){
         long categoryCid = DBManager.getInstance().getCategoryDBHandler()
-                .queryCategory(CategoryType.getCategoryType(getValue(ContentViewType.type)), getValue(ContentViewType.category)).getCid();
+                .queryCategory(CategoryType.getCategoryType(getCurrentTypeDBName()), getCurrentCategoryDBName()).getCid();
 
         Detail detail = new Detail();
-        detail.setIo(getValue(ContentViewType.type));
+        detail.setIo(getCurrentTypeDBName());
         detail.setTime(getTime(getValue(ContentViewType.date)));
         detail.setPrice(Integer.valueOf(getValue(ContentViewType.price)));
         detail.setCategory_cid(categoryCid);

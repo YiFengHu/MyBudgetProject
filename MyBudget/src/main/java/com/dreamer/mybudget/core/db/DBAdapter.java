@@ -17,9 +17,10 @@ import java.util.List;
 public class DBAdapter {
     private static final String TAG = DBAdapter.class.getSimpleName();
 
-    public static List<DailyDetail> getMonthlyDetails(CategoryType type){
+    public static List<DailyDetail> getMonthlyDetails(long datumTime, CategoryType type){
         // get today and clear time of day
         Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(datumTime);
         cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
         cal.clear(Calendar.MINUTE);
         cal.clear(Calendar.SECOND);

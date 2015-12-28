@@ -2,6 +2,7 @@ package com.dreamer.mybudget.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.dreamer.mybudget.Detail;
 import com.dreamer.mybudget.R;
 import com.dreamer.mybudget.core.db.data.CategoryType;
+import com.dreamer.mybudget.core.db.data.DefaultCategory;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
  */
 public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.ViewHolder>{
 
+    private static final String TAG = DetailListAdapter.class.getSimpleName();
     private Context context = null;
     private List<Detail> data = null;
 
@@ -44,7 +47,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
         Detail detail  = data.get(position);
 
         String priceText = "";
-        if(CategoryType.Income.name().equals(detail.getIo())){
+        if(CategoryType.Income.getTypeDBName().equals(detail.getIo())){
             holder.priceTextView.setTextColor(context.getResources().getColor(R.color.green));
             priceText += "+ ";
         }else{
@@ -54,7 +57,15 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
 
         holder.priceTextView.setText(priceText+String.valueOf(detail.getPrice()));
         holder.noteTextView.setText(detail.getMark());
-        holder.categoryTextView.setText(detail.getCategoryName().getCategory_name());
+
+        DefaultCategory category = DefaultCategory.getDefaultCategory(detail.getCategoryName().getCategory_name());
+        if(category!=null) {
+            String categoryText = context.getString(category.getCategoryNameRes());
+            holder.categoryTextView.setText(categoryText);
+        }else{
+            Log.e(TAG, "onBindViewHolder: category null!!: category db name is "+detail.getCategoryName().getCategory_name());
+        }
+
         holder.dateTextView.setText(getDate(detail.getTime()));
     }
 
